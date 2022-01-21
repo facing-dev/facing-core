@@ -1,5 +1,7 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const CopyPlugin = require("copy-webpack-plugin");
 module.exports = {
   mode: 'development',
   entry: './src/main.ts',
@@ -40,8 +42,8 @@ module.exports = {
 
               }]
             ],
-            plugins: [["@babel/plugin-proposal-decorators",{
-              legacy:true
+            plugins: [["@babel/plugin-proposal-decorators", {
+              legacy: true
 
             }]]
           }
@@ -53,6 +55,24 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'simler-test',
       template: './src/index.html'
+    }),
+    new ForkTsCheckerWebpackPlugin({
+      typescript: {
+        diagnosticOptions: {
+          semantic: true,
+          syntactic: true,
+        },
+        mode: "write-references",
+      },
+    }),
+    new CopyPlugin({
+      patterns: [
+        {
+          from: "./src/assets",
+          to: "./assets"
+        },
+
+      ],
     })
   ],
   devServer: {
