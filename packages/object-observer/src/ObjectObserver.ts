@@ -1,34 +1,36 @@
 import { Record, Watcher } from './Record'
 import { ObservableTypes, create as createSlot, get as getSlot } from './Slot'
 import { travel } from './travel'
+import {makeObserve} from './observe'
 
 
-type AgentConstructorOpt = { record?: Record, fieldNames?: string | string[] }
+type AgentConstructorOpt = { record?: Record }
 class ObjectObserverRefrenceAgent<T extends ObservableTypes> {
-    private rawObj: T
-    private obj:T
+    private rawObject: T
+    public object: T
     constructor(obj: T, opt: AgentConstructorOpt) {
-        this.rawObj = obj
-        this.obj=obj
+        this.rawObject = obj
+        this.object = obj
         this.#makeObservable(opt)
 
     }
     #makeObservable(opt: AgentConstructorOpt) {
-        let obj = this.rawObj
+        let obj = this.rawObject
         let slot = getSlot(obj)
 
         if (slot) {
-            return
+            this.object=obj
+        }else{
+            this.object = makeObserve(obj)
         }
-        this.obj=this.rawObj
-
+        if(opt.record){
+            this.addRecord(opt.record)
+        }
         
-        
-
     }
     addRecord(record: Record) {
         let self = this
-        let obj = this.rawObj
+        let obj = this.rawObject
         travel(obj, function (obj) {
             let slot = getSlot(obj)
             if (!slot) {
@@ -47,11 +49,10 @@ class ObjectObserverRefrenceAgent<T extends ObservableTypes> {
             }
             return true
         })
-
     }
     removeRecord(record: Record) {
         let self = this
-        let obj = this.rawObj
+        let obj = this.rawObject
         travel(obj, function (obj) {
             let slot = getSlot(obj)
             if (!slot) {
@@ -77,15 +78,16 @@ class ObjectObserverRefrenceAgent<T extends ObservableTypes> {
     }
 }
 
-export default class ObjectObserver {
+export class ObjectObserver {
 
     makeObjectObservable(obj: ObservableTypes, opt: AgentConstructorOpt) {
-        return new ObjectObserverRefrenceAgent(obj, {
-            record: opt.record,
-            fieldNames: opt.fieldNames
-        })
+        return new ObjectObserverRefrenceAgent(obj, opt)
     }
 }
-export function createRecord() {
-    return new Record()
+export function createRecord(config?:(record:Record)=>void) {
+    let record = new Record()
+    if(config){
+        config(record)
+    }
+    return record
 }

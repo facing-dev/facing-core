@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    // "baseUrl": ".",
     "baseUrl": ".",
+    "rootDir": ".",
     "module": "ESNext",
     "target": "ES6",
     "jsx": "react-jsx",
@@ -16,7 +16,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "rootDir": ".",
+    
     "composite": true,
     "declaration": true,
     "declarationMap": true,
@@ -31,10 +31,10 @@
     }
   },
   "include": [
-    "*/src/*"
+    "*/src"
   ],
   "exclude": [
-    "*/node_modules/*",
-    "*/build/*"
+    "*/node_modules",
+    "*/build"
   ]
 }

@@ -4,14 +4,19 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
 const baseConfig = require("../webpack.config")
-const config = merge(baseConfig,{
+const config = merge(baseConfig, {
   mode: 'development',
   entry: './src/main.ts',
   output: {
     path: path.resolve(__dirname, 'build/web'),
     filename: 'main.bundle.js',
   },
- 
+  resolve: {
+    alias: {
+
+      'core-js': path.resolve(__dirname, 'node_modules/core-js')
+    }
+  },
   module: {
     rules: [
       {

@@ -1,16 +1,17 @@
 import { ObservableTypes, get as getSlot, isObservableType } from '../Slot'
 import { makeObserve } from '../observe'
-import {scheduleObserved} from './utils'
-export function makeObjectProxy(obj: { [index: string]: any }): ObservableTypes {
-    let ret = new Proxy(obj, {
-        set(obj, prop, value, receiver) {
-            let target = value
-            if (isObservableType(target)) {
-                target = makeObserve(target)
+import { scheduleObserved } from './utils'
+export function makeObjectProxy(object: { [index: string]: any }): ObservableTypes {
+
+    return new Proxy(object, {
+        set: function (target, name, value, receiver) {
+            console.log('in set')
+            if (isObservableType(value)) {
+                makeObserve(value)
             }
-            Reflect.set(receiver, prop, target, receiver)
+            Reflect.set(target, name, value, receiver)
+            scheduleObserved(receiver)
             return true
-        }
+        },
     })
-    return ret
 }
