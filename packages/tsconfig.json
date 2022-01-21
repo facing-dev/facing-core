@@ -3,16 +3,20 @@
     "module": "ESNext",
     "target": "ES6",
     "jsx": "react-jsx",
-    "strict":true,
+    "strict": true,
     "sourceMap": true,
-    "outDir": "./build",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "isolatedModules": true,
     "composite": true,
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "noUnusedLocals": false
   },
 }

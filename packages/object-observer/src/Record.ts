@@ -1,5 +1,7 @@
+
+import { ObservableTypes } from './Slot'
 export interface Watcher {
-    (): void
+    (object:ObservableTypes): void
 }
 export class Record {
     watchers: Watcher[] = []

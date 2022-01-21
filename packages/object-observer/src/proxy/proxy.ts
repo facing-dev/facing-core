@@ -1,5 +1,6 @@
 import { ObservableTypes, get as getSlot, isObservableType } from '../Slot'
 import {makeArrayProxy} from './array'
+
 function makeObjectProxy(obj: { [index: string]: any }): ObservableTypes {
     let proxy = new Proxy(obj, {
 

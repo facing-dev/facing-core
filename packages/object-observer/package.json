@@ -4,11 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test-build":"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+
+  },
+  "devDependencies": {
     "typescript": "^4.5.4"
   }
 }
