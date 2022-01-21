@@ -2,17 +2,9 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "outDir": "./build/ts",
-        "rootDir": "./src",
         "experimentalDecorators": true,
         "declaration": true,
         "emitDeclarationOnly": true,
         "isolatedModules": true
-    },
-    "exclude": [
-        "node_modules",
-        "**/node_modules/*"
-    ],
-    "include": [
-        "./src"
-    ]
+    }
 }

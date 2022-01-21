@@ -1,14 +1,17 @@
 const path = require('path');
+const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
-module.exports = {
+const baseConfig = require("../webpack.config")
+const config = merge(baseConfig,{
   mode: 'development',
   entry: './src/main.ts',
   output: {
     path: path.resolve(__dirname, 'build/web'),
     filename: 'main.bundle.js',
   },
+ 
   module: {
     rules: [
       {
@@ -83,4 +86,6 @@ module.exports = {
     compress: true,
     port: 8080,
   }
-}
+})
+
+module.exports = config
