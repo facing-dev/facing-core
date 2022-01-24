@@ -1,24 +1,15 @@
 import { ObservableTypes, isObservableType } from './Slot'
-export function travel(obj: ObservableTypes, ite: (obj: ObservableTypes, fieldName: string | null, level: number) => boolean) {
-    function step(obj: ObservableTypes, fieldName: string | null, level = 0) {
-        if (!ite(obj, fieldName, level)) {
+import {eachOf} from './proxy/utils'
+export function travel(obj: ObservableTypes, ite: (obj: ObservableTypes, fieldName: string | null, level: number|null,parent:ObservableTypes|null) => boolean) {
+    function step(obj: ObservableTypes, fieldName: string | null, level:number,parent:ObservableTypes|null) {
+        if (!ite(obj, fieldName, level,parent)) {
             return
         }
-        if (Array.isArray(obj)) {
-            for (let val of obj) {
-                if (isObservableType(val)) {
-                    step(val, null, level + 1)
-                }
+        eachOf(obj,function(value){
+            if (isObservableType(value)) {
+                step(value, null, level + 1,obj)
             }
-            return
-        }
-
-        for (let key in obj) {
-            let val = obj[key]
-            if (isObservableType(val)) {
-                step(val, key, level + 1)
-            }
-        }
+        })
     }
-    step(obj, null, 0)
+    step(obj, null, 0,null)
 }

@@ -1,8 +1,8 @@
 import { Record } from './Record'
 
-interface RecordReference {
-    record: Record,
-    refCount: number
+interface SlotReference {
+    slot: Slot,
+    // referenceCount: number
 }
 
 const ObjectObserverSymble = Symbol('Simler/ObjectObserver')
@@ -27,7 +27,22 @@ type MakeTypesObservable<T extends Object> = T & {
 export type ObservableTypes = MakeTypesObservable<Array<any> | { [index: string]: any }>
 
 export class Slot {
-    recordReferences: Map<Record, RecordReference> = new Map()
+    records: Map<Record, Record> = new Map()
+    slotReferences: Map<Slot, SlotReference> = new Map()
+    addReference(slot: Slot) {
+        if (this.slotReferences.has(slot)) {
+            return
+        }
+        this.slotReferences.set(slot, {
+            slot
+        })
+    }
+    removeReference(slot: Slot) {
+        if (!this.slotReferences.has(slot)) {
+            return
+        }
+        this.slotReferences.delete(slot)
+    }
 }
 
 
@@ -38,6 +53,7 @@ export function create(obj: ObservableTypes) {
             value: new Slot()
         })
     }
+    return get(obj)!
 }
 
 export function get(obj: ObservableTypes) {

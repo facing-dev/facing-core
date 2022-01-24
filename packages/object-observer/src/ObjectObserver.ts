@@ -1,7 +1,7 @@
 import { Record, Watcher } from './Record'
 import { ObservableTypes, create as createSlot, get as getSlot } from './Slot'
 import { travel } from './travel'
-import {makeObserve} from './observe'
+import { makeObserve } from './observe'
 
 
 type AgentConstructorOpt = { record?: Record }
@@ -19,23 +19,32 @@ class ObjectObserverRefrenceAgent<T extends ObservableTypes> {
         let slot = getSlot(obj)
 
         if (slot) {
-            this.object=obj
-        }else{
+            this.object = obj
+        } else {
             this.object = makeObserve(obj)
         }
-        if(opt.record){
+        if (opt.record) {
             this.addRecord(opt.record)
         }
-        
     }
     addRecord(record: Record) {
         let self = this
         let obj = this.rawObject
+        let slot = getSlot(obj)
+        if (!slot) {
+            console.error(self)
+            throw 'Add record to unobserved object'
+        }
+        if (slot.records.has(record)) {
+            console.error(self)
+            throw 'Record has added'
+        }
+        slot.records.set(record, record)
+        /*
         travel(obj, function (obj) {
             let slot = getSlot(obj)
             if (!slot) {
-                console.error(self)
-                throw 'Add record to unobserved object'
+
             }
             let recRef = slot.recordReferences.get(record)
             if (!recRef) {
@@ -49,10 +58,22 @@ class ObjectObserverRefrenceAgent<T extends ObservableTypes> {
             }
             return true
         })
+        */
     }
     removeRecord(record: Record) {
         let self = this
         let obj = this.rawObject
+        let slot = getSlot(obj)
+        if (!slot) {
+            console.error(self)
+            throw 'Remove record to unobserved object'
+        }
+        if (!slot.records.has(record)) {
+            console.error(self)
+            throw 'Record not existed'
+        }
+        slot.records.delete(record)
+        /*
         travel(obj, function (obj) {
             let slot = getSlot(obj)
             if (!slot) {
@@ -75,18 +96,19 @@ class ObjectObserverRefrenceAgent<T extends ObservableTypes> {
             return true
 
         })
+        */
     }
 }
 
 export class ObjectObserver {
 
-    makeObjectObservable(obj: ObservableTypes, opt: AgentConstructorOpt) {
+    makeObjectObservable<T extends ObservableTypes >(obj: T, opt: AgentConstructorOpt) {
         return new ObjectObserverRefrenceAgent(obj, opt)
     }
 }
-export function createRecord(config?:(record:Record)=>void) {
+export function createRecord(config?: (record: Record) => void) {
     let record = new Record()
-    if(config){
+    if (config) {
         config(record)
     }
     return record
