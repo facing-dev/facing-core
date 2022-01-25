@@ -1,11 +1,11 @@
-import { Record } from './Record'
+import { Record } from './record'
 
 interface SlotReference {
     slot: Slot,
     // referenceCount: number
 }
 
-const ObjectObserverSymble = Symbol('Simler/ObjectObserver')
+const ObjectObserverSymbol = Symbol('Simler/ObjectObserver')
 
 export function isObservableType(obj: any): obj is ObservableTypes {
     if (obj === null) {
@@ -21,7 +21,7 @@ export function isObservableType(obj: any): obj is ObservableTypes {
 }
 
 type MakeTypesObservable<T extends Object> = T & {
-    [ObjectObserverSymble]?: Slot
+    [ObjectObserverSymbol]?: Slot
 }
 
 export type ObservableTypes = MakeTypesObservable<Array<any> | { [index: string]: any }>
@@ -48,7 +48,7 @@ export class Slot {
 
 export function create(obj: ObservableTypes) {
     if (!get(obj)) {
-        Object.defineProperty(obj, ObjectObserverSymble, {
+        Object.defineProperty(obj, ObjectObserverSymbol, {
             enumerable: false,
             value: new Slot()
         })
@@ -57,6 +57,6 @@ export function create(obj: ObservableTypes) {
 }
 
 export function get(obj: ObservableTypes) {
-    return obj[ObjectObserverSymble] ?? null
+    return obj[ObjectObserverSymbol] ?? null
 }
 

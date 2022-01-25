@@ -1,5 +1,5 @@
-import { Record, Watcher } from './Record'
-import { ObservableTypes, create as createSlot, get as getSlot } from './Slot'
+import { Record, Watcher } from './record'
+import { ObservableTypes, create as createSlot, get as getSlot } from './slot'
 import { travel } from './travel'
 import { makeObserve } from './observe'
 

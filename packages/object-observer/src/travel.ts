@@ -1,4 +1,4 @@
-import { ObservableTypes, isObservableType } from './Slot'
+import { ObservableTypes, isObservableType } from './slot'
 import {eachOf} from './proxy/utils'
 export function travel(obj: ObservableTypes, ite: (obj: ObservableTypes, fieldName: string | null, level: number|null,parent:ObservableTypes|null) => boolean) {
     function step(obj: ObservableTypes, fieldName: string | null, level:number,parent:ObservableTypes|null) {

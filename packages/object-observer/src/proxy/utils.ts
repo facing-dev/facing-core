@@ -1,4 +1,4 @@
-import { ObservableTypes, get as getSlot, Slot, isObservableType } from '../Slot'
+import { ObservableTypes, get as getSlot, Slot, isObservableType } from '../slot'
 export function eachOf(obj: ObservableTypes, ite: (obj: any) => void) {
     Object.values(obj).forEach(v => ite(v))
 }

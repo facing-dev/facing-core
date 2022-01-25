@@ -1,4 +1,4 @@
-import { ObservableTypes } from '../Slot'
+import { ObservableTypes } from '../slot'
 import {generateProxyHandler} from './common'
 // let ArrayProxy: Array<any> | null = null
 

@@ -1,4 +1,4 @@
-import {get as getSlot, isObservableType ,ObservableTypes} from '../Slot'
+import {get as getSlot, isObservableType ,ObservableTypes} from '../slot'
 import { makeObserve } from '../observe'
 import { scheduleObserved } from './utils'
 export function generateProxyHandler<T extends ObservableTypes>(handler?:ProxyHandler<T>):ProxyHandler<T>{

@@ -1,4 +1,4 @@
-import { ObservableTypes, get as getSlot, isObservableType } from '../Slot'
+import { ObservableTypes, get as getSlot, isObservableType } from '../slot'
 import { makeArrayProxy } from './array'
 import { makeObjectProxy } from './object'
 

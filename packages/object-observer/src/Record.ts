@@ -1,5 +1,5 @@
 
-import { ObservableTypes } from './Slot'
+import { ObservableTypes } from './slot'
 export interface Watcher {
     (object:ObservableTypes): void
 }

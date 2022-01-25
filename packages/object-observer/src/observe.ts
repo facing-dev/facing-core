@@ -1,6 +1,6 @@
-import { ObservableTypes } from './Slot'
+import { ObservableTypes } from './slot'
 import { travel } from './travel'
-import { get as getSlot, create as createSlot } from './Slot'
+import { get as getSlot, create as createSlot } from './slot'
 import { makeProxy } from './proxy/proxy'
 
 export function makeObserve<T extends ObservableTypes>(obj: T): T {

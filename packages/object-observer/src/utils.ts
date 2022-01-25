@@ -1,4 +1,4 @@
-import { ObservableTypes } from './Slot'
+import { ObservableTypes } from './slot'
 export function checkObjectFieldNames(obj: ObservableTypes, fieldNames?: string | string[]) {
     let fNs: null | string[] = null
     if (fieldNames === undefined) {
