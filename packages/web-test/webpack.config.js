@@ -20,7 +20,7 @@ const config = merge(baseConfig, {
   module: {
     rules: [
       {
-        test: [/\.m?js$/],
+        test: [/\.m?jsx?$/],
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
@@ -47,6 +47,8 @@ const config = merge(baseConfig, {
               ["@babel/preset-typescript", {
                 isTSX: true,
                 allExtensions: true,
+                jsxPragma:"h",
+                jsxPragmaFrag:"hFrag"
 
               }]
             ],

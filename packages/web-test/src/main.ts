@@ -1,24 +1,26 @@
-import * as Observer from '@object-observer/objectObserver'
-let O = new Observer.ObjectObserver()
+import t from './simler-core/test'
+console.log(t())
+// import { Simler } from '@simler-core/expose'
+// import {Component} from '@simler-core/component/decorator/component'
+// import { Application } from '@simler-core/application'
+// @Component({
+//     render:()=>{}
+// })
+// class comp extends Simler{
 
-let obj:any[]=[]
-let p = O.makeObjectObservable(obj,{
-    record:Observer.createRecord((record)=>{
-        record.watchers.push(function(){
-            console.log('wat',arguments)
-        })
-    })
-});
+// }
 
-(window as any).p = p.object
-let z = p.object
-z.push({})
-console.log('----')
-z[0].s=123
-console.log('----')
-z[0].s={}
-console.log('----')
-z[0].s.f=123
-delete z[0].s.f
+// let z = new comp({
+//     application:new Application()
+// })
+// console.log(z)
 
-export default function(){}
+// function m(){
+//     return class t{
+
+//     }
+// }
+
+// console.log(m())
+// console.log(m())
+// console.log(m())

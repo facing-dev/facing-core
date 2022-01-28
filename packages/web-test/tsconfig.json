@@ -4,7 +4,10 @@
         "outDir": "./build/ts",
         "experimentalDecorators": true,
         "declaration": true,
-        "emitDeclarationOnly": true,
+        "emitDeclarationOnly": false,
         "isolatedModules": true
-    }
+    },
+    "include": ["src/tsx.d.ts"]
+
+
 }
