@@ -6,7 +6,7 @@ const CopyPlugin = require("copy-webpack-plugin");
 const baseConfig = require("../webpack.config")
 const config = merge(baseConfig, {
   mode: 'development',
-  entry: './src/main.ts',
+  entry: path.resolve(__dirname,'./src/main.ts'),
   output: {
     path: path.resolve(__dirname, 'build/web'),
     filename: 'main.bundle.js',
@@ -45,16 +45,20 @@ const config = merge(baseConfig, {
                 "useBuiltIns": "usage"
               }],
               ["@babel/preset-typescript", {
-                isTSX: true,
-                allExtensions: true,
-                jsxPragma:"h",
-                jsxPragmaFrag:"hFrag"
+                // isTSX: true,
+                // allExtensions: true,
+                // jsxPragma:"h",
+                // jsxPragmaFrag:"hFrag"
 
               }]
             ],
             plugins: [["@babel/plugin-proposal-decorators", {
               legacy: true
 
+            }],["@babel/plugin-transform-react-jsx",{
+              runtime:"classic",
+              pragma:"h",
+              pragmaFrag:"hFrag"
             }]]
           }
         }
@@ -64,7 +68,7 @@ const config = merge(baseConfig, {
   plugins: [
     new HtmlWebpackPlugin({
       title: 'simler-test',
-      template: './src/index.html'
+      template: path.resolve(__dirname,'./src/index.html')
     }),
     new ForkTsCheckerWebpackPlugin({
       typescript: {
@@ -78,8 +82,8 @@ const config = merge(baseConfig, {
     new CopyPlugin({
       patterns: [
         {
-          from: "./src/assets",
-          to: "./assets"
+          from: path.resolve(__dirname,"./src/assets"),
+          to: path.resolve(__dirname,"./assets")
         },
 
       ],
@@ -88,7 +92,7 @@ const config = merge(baseConfig, {
   devServer: {
     static: {
       directory: path.join(__dirname, 'src/assets'),
-      publicPath: '/assets'
+      publicPath: path.resolve(__dirname,'/assets')
     },
     compress: true,
     port: 8080,

@@ -5,6 +5,7 @@
     "module": "ESNext",
     "target": "ES6",
     "jsx": "preserve",
+    
     "strict": true,
     "sourceMap": true,
     "lib": [
@@ -16,7 +17,10 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    
+    "emitDeclarationOnly":true,
+
+    "experimentalDecorators": true,
+
     "composite": true,
     "declaration": true,
     "declarationMap": true,
@@ -34,7 +38,9 @@
     }
   },
   "include": [
-    "*/src"
+    "*/src/**/*.ts",
+    "*/src/**/*.tsx",
+
   ],
   "exclude": [
     "*/node_modules",

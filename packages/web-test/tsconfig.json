@@ -2,12 +2,8 @@
     "extends": "../tsconfig.json",
     "compilerOptions": {
         "outDir": "./build/ts",
-        "experimentalDecorators": true,
-        "declaration": true,
-        "emitDeclarationOnly": false,
-        "isolatedModules": true
-    },
-    "include": ["src/tsx.d.ts"]
+    }
+
 
 
 }

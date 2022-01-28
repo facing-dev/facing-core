@@ -6,6 +6,6 @@ module.exports = {
             '@object-observer': path.resolve(__dirname, './object-observer/src/'),
             '@simler-core':path.resolve(__dirname,'./simler-core/src/')
         },
-        extensions: ['.ts', '...'],
+        extensions: ['.ts','.tsx','.d.ts', '...'],
     }
 }

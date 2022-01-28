@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve":"./node_modules/.bin/webpack serve",
+    "serve": "./node_modules/.bin/webpack serve",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/plugin-transform-react-jsx": "^7.16.7",
     "core-js": "^3.20.3",
     "webpack-merge": "^5.8.0"
   },
