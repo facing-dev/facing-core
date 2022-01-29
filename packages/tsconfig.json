@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
+    "moduleResolution": "node",
     "baseUrl": ".",
     "rootDir": ".",
     "module": "ESNext",
     "target": "ES6",
     "jsx": "preserve",
-    
+    // "jsxFactory":"h",
+    // "jsxFragmentFactory": "hFrag",
+    // "jsxImportSource": "sd",
     "strict": true,
     "sourceMap": true,
     "lib": [

@@ -5,15 +5,15 @@ import { VNodeComponent } from '../vdom/vnode/vnode'
 const SimlerSymbol = Symbol('Simler/Simler')
 
 export class Slot {
-    application: Application
+    // application: Application
     component: SlotComponent
     vnode: VNodeComponent | null = null
     constructor(opt: {
         component: SlotComponent
-        application: Application
+        // application: Application
     }) {
         this.component = opt.component
-        this.application = opt.application
+        // this.application = opt.application
     }
     destroy(){
         if(!this.vnode){
