@@ -1,17 +1,18 @@
 {
-  "name": "@simler/scheduler",
-  "version": "0.0.1",
+  "name": "@simler/logger",
+  "version": "0.0.9",
   "description": "",
-  "main": "index.js",
+  "main": "dist/logger.js",
   "scripts": {
+    "compile":"tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
+  "files": [
+    "dist/"
+  ],
   "dependencies": {
-
-  },
-  "devDependencies": {
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.5"
   }
 }

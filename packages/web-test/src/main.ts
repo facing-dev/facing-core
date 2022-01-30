@@ -1,1 +1,5 @@
-import './simler-core/test'
+// import './simler-core/test'
+import Logger from './logger'
+Logger.info('sss')
+
+

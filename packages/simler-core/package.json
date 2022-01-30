@@ -1,5 +1,5 @@
 {
-  "name": "@ruojianll/simler-core",
+  "name": "@simler/simler-core",
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
@@ -12,6 +12,7 @@
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "csstype": "^3.0.10"
-  }
+    "@simler/logger": "0.0.1"
+  },
+  "files": ["dist/"]
 }

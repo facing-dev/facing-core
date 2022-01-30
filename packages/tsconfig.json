@@ -1,14 +1,10 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "baseUrl": ".",
-    "rootDir": ".",
+
     "module": "ESNext",
     "target": "ES6",
-    "jsx": "preserve",
-    // "jsxFactory":"h",
-    // "jsxFragmentFactory": "hFrag",
-    // "jsxImportSource": "sd",
+
     "strict": true,
     "sourceMap": true,
     "lib": [
@@ -20,33 +16,15 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "emitDeclarationOnly":true,
+    "emitDeclarationOnly":false,
 
     "experimentalDecorators": true,
 
     "composite": true,
     "declaration": true,
     "declarationMap": true,
-    "noUnusedLocals": false,
-    "paths": {
-      "@scheduler/*": [
-        "scheduler/src/*"
-      ],
-      "@observer/*": [
-        "observer/src/*"
-      ],
-      "@simler-core/*":[
-        "simler-core/src/*"
-      ]
-    }
+    "noUnusedLocals": false
+    
   },
-  "include": [
-    "*/src/**/*.ts",
-    "*/src/**/*.tsx",
 
-  ],
-  "exclude": [
-    "*/node_modules",
-    "*/build"
-  ]
 }
