@@ -1,4 +1,4 @@
-import * as Observer from '@object-observer/objectObserver'
+import * as Observer from '@observer/observer'
 let O = new Observer.ObjectObserver()
 
 let obj:any[]=[]

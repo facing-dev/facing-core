@@ -32,8 +32,8 @@
       "@scheduler/*": [
         "scheduler/src/*"
       ],
-      "@object-observer/*": [
-        "object-observer/src/*"
+      "@observer/*": [
+        "observer/src/*"
       ],
       "@simler-core/*":[
         "simler-core/src/*"
