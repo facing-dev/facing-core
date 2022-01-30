@@ -7,24 +7,28 @@
         "jsx": "preserve",
         "emitDeclarationOnly":true,
         "paths": {
-            "@scheduler/*": [
-                "scheduler/src/*"
-            ],
-            "@observer/*": [
-                "observer/src/*"
-            ],
-            "@simler-core/*": [
-                "simler-core/src/*"
-            ],
+            // "@scheduler/*": [
+            //     "scheduler/src/*"
+            // ],
+            // "@observer/*": [
+            //     "observer/src/*"
+            // ],
+            "@simler/simler-core": [
+                "simler-core/src"
+            ]
         },
  
     },
     "include": [
-        "../*/src/**/*.ts",
-        "../*/src/**/*.tsx",
+        // 
+        "../*/src/**/*",
+        // "../*/src/**/*.d.ts",
+        // "../*/dist/**/*",
     ],
     "exclude": [
-        "../*/node_modules",
-        "../*/dist"
-    ]
+        // "../*/dist/**/*",
+    ],
+    // "references": [{
+    //     "path": "../simler-core",
+    // }]
 }

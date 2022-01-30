@@ -11,16 +11,16 @@ const config = merge(baseConfig, {
     path: path.resolve(__dirname, 'build/web'),
     filename: 'main.bundle.js',
   },
-  // resolve: {
-  //   alias: {
+  resolve: {
+    alias: {
 
-  //     // '@scheduler': path.resolve(__dirname, './scheduler/src/'),
-  //     // '@observer': path.resolve(__dirname, './observer/src/'),
-  //     // '@logger': path.resolve(__dirname, './logger/src/'),
-  //     // '@simler-core': path.resolve(__dirname, './simler-core/src/')
-  //     // 'core-js': path.resolve(__dirname, 'node_modules/core-js')
-  //   }
-  // },
+      // '@scheduler': path.resolve(__dirname, './scheduler/src/'),
+      // '@observer': path.resolve(__dirname, './observer/src/'),
+      // '@logger': path.resolve(__dirname, './logger/src/'),
+      '@simler/simler-core': path.resolve(__dirname, '../simler-core/src/'),
+      'core-js': path.resolve(__dirname, 'node_modules/core-js')
+    }
+  },
   module: {
     rules: [
       {
@@ -49,6 +49,8 @@ const config = merge(baseConfig, {
                 "useBuiltIns": "usage"
               }],
               ["@babel/preset-typescript", {
+                // allowDeclareFields:false
+                // onlyRemoveTypeImports:true
                 // isTSX: true,
                 // allExtensions: true,
                 // jsxPragma:"h",
@@ -63,7 +65,7 @@ const config = merge(baseConfig, {
               }],
               ["@babel/plugin-transform-react-jsx", {
                 runtime: "automatic",
-                importSource: "@simler-core"
+                importSource: "@simler/simler-core"
               }]
             ]
           }

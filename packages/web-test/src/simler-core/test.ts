@@ -1,5 +1,5 @@
-// import Logger from '../logger'
-import { Simler, Component } from '@simler-core/expose'
+// // import Logger from '../logger'
+import { Simler, Component } from "@simler/simler-core"
 
 
 import temp from './test.temp'
@@ -15,3 +15,4 @@ export class TestComp extends Simler{
 }
 
 let t = new TestComp()
+export default {}

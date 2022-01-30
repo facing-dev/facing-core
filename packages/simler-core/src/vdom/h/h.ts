@@ -1,5 +1,6 @@
 import type { Component } from '../../component/component'
-type Child = typeof Component | string | number | object | boolean
+import Logger from '../../logger'
+export type Child = typeof Component | string | number | object | boolean
 export type Key = string | number
 export type ReferenceObject<T extends typeof Component> = {
     current: T | null
@@ -15,7 +16,7 @@ export function h(
         children?: Child
     },
     key: string | number) {
-    console.log('h', arguments)
+    Logger.info('h function', ...arguments)
 }
 
 export const Fragment = Symbol('Simler/jsx-fragment')
