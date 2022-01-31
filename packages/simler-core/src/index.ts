@@ -5,7 +5,7 @@ export { Component } from './component/decorator/component'
 
 import type { Key, ReferenceObject } from './vdom/h/h'
 import type {Component} from './component/component'
-
+console.log(123)
 declare global {
   namespace JSX {
 
