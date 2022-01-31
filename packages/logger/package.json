@@ -2,7 +2,8 @@
   "name": "@simler/logger",
   "version": "0.2.1",
   "description": "",
-  "main": "dist/logger.js",
+  "main": "dist/index.js",
+  "types":"dist/index.d.ts",
   "scripts": {
     "compile": "tsc",
     "prepublishOnly": "npm run compile",
@@ -15,5 +16,6 @@
   ],
   "dependencies": {
     "typescript": "^4.5.5"
-  }
+  },
+  "gitHead": "f380832bd98c77953eabbedb4479c2faca137409"
 }
