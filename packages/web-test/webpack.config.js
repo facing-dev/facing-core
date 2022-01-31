@@ -3,7 +3,7 @@ const { merge } = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CopyPlugin = require("copy-webpack-plugin");
-const baseConfig = require("../webpack.config")
+const baseConfig = require("../config/webpack/webpack.config")
 const config = merge(baseConfig, {
   mode: 'development',
   entry: path.resolve(__dirname, './src/main.ts'),
