@@ -1,7 +1,6 @@
 {
   "packages": [
     "packages/*"
-
   ],
   "npmClient": "npm",
   "command": {
@@ -18,5 +17,5 @@
       "allowBranch": "master"
     }
   },
-  "version": "0.2.0"
+  "version": "0.2.1"
 }
