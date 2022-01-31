@@ -17,7 +17,8 @@ const config = merge(baseConfig, {
       // '@scheduler': path.resolve(__dirname, './scheduler/src/'),
       // '@observer': path.resolve(__dirname, './observer/src/'),
       // '@logger': path.resolve(__dirname, './logger/src/'),
-      '@simler/simler-core': path.resolve(__dirname, '../simler-core/src/'),
+      '@simler/simler-core': path.resolve(__dirname, '../packages/simler-core/src/'),
+      '@simler/logger':path.resolve(__dirname, '../packages/logger/src/'),
       'core-js': path.resolve(__dirname, 'node_modules/core-js')
     }
   },

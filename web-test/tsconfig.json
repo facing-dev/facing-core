@@ -14,14 +14,18 @@
             //     "observer/src/*"
             // ],
             "@simler/simler-core": [
-                "simler-core/src"
+                "packages/simler-core/src"
+            ],
+            "@simler/logger": [
+                "packages/logger/src"
             ]
         },
  
     },
     "include": [
         // 
-        "../*/src/**/*",
+        "src/**/*",
+        "../packages/*/src/**/*"
         // "../*/src/**/*.d.ts",
         // "../*/dist/**/*",
     ],

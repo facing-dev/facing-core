@@ -1,9 +1,7 @@
 {
   "packages": [
-    "packages/logger",
-    "packages/observer",
-    "packages/scheduler",
-    "packages/simler-core"
+    "packages/*"
+
   ],
   "npmClient": "npm",
   "command": {
