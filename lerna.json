@@ -15,7 +15,7 @@
       ]
     },
     "version": {
-      "allowBranch": "main"
+      "allowBranch": "master"
     }
   },
   "version": "0.2.0"
