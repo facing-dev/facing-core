@@ -1,115 +1,47 @@
-import { Record, Watcher } from './record'
-import { ObservableTypes, create as createSlot, get as getSlot } from './slot'
-import { travel } from './travel'
+import { Record } from './record'
+import { ObservableTypes, get as getSlot } from './slot'
 import { makeObserve } from './observe'
 
-
 type AgentConstructorOpt = { record?: Record }
-class ObjectObserverRefrenceAgent<T extends ObservableTypes> {
-    private rawObject: T
+export class ObserverRefrenceAgent<T extends ObservableTypes> {
     public object: T
+    records: Map<Record, Record> = new Map()
     constructor(obj: T, opt: AgentConstructorOpt) {
-        this.rawObject = obj
         this.object = obj
-        this.#makeObservable(opt)
-
-    }
-    #makeObservable(opt: AgentConstructorOpt) {
-        let obj = this.rawObject
         let slot = getSlot(obj)
-
         if (slot) {
             this.object = obj
         } else {
             this.object = makeObserve(obj)
+            slot = getSlot(this.object)!
         }
+        slot.addObjectObserverRefrenceAgent(this)
         if (opt.record) {
             this.addRecord(opt.record)
         }
     }
     addRecord(record: Record) {
-        let self = this
-        let obj = this.rawObject
-        let slot = getSlot(obj)
-        if (!slot) {
-            console.error(self)
-            throw 'Add record to unobserved object'
-        }
-        if (slot.records.has(record)) {
+        if (this.records.has(record)) {
             console.error(self)
             throw 'Record has added'
         }
-        slot.records.set(record, record)
-        /*
-        travel(obj, function (obj) {
-            let slot = getSlot(obj)
-            if (!slot) {
-
-            }
-            let recRef = slot.recordReferences.get(record)
-            if (!recRef) {
-                recRef = {
-                    refCount: 1,
-                    record
-                }
-                slot.recordReferences.set(record, recRef)
-            } else {
-                recRef.refCount++
-            }
-            return true
-        })
-        */
+        this.records.set(record, record)
     }
     removeRecord(record: Record) {
-        let self = this
-        let obj = this.rawObject
-        let slot = getSlot(obj)
-        if (!slot) {
-            console.error(self)
-            throw 'Remove record to unobserved object'
-        }
-        if (!slot.records.has(record)) {
+        if (!this.records.has(record)) {
             console.error(self)
             throw 'Record not existed'
         }
-        slot.records.delete(record)
-        /*
-        travel(obj, function (obj) {
-            let slot = getSlot(obj)
-            if (!slot) {
-                console.error(self)
-                throw 'Remove record from unobserved object'
-            }
-            let recRef = slot.recordReferences.get(record)
-            if (!recRef) {
-                console.error(self)
-                throw 'Remove record from not found recRef'
-            }
-            recRef.refCount--
-            if (recRef.refCount < 0) {
-                console.error(self)
-                throw 'Remove record ref cound === 0'
-            }
-            if (recRef.refCount === 0) {
-                slot.recordReferences.delete(record)
-            }
-            return true
-
-        })
-        */
+        this.records.delete(record)
+    }
+    release() {
+        let slot = getSlot(this.object)!
+        slot.removeObjectObserverRefrenceAgent(this)
     }
 }
 
-export class ObjectObserver {
-
-    makeObjectObservable<T extends ObservableTypes >(obj: T, opt: AgentConstructorOpt) {
-        return new ObjectObserverRefrenceAgent(obj, opt)
+export class Observer {
+    observe<T extends ObservableTypes>(obj: T, opt: AgentConstructorOpt) {
+        return new ObserverRefrenceAgent(obj, opt)
     }
-}
-export function createRecord(config?: (record: Record) => void) {
-    let record = new Record()
-    if (config) {
-        config(record)
-    }
-    return record
 }

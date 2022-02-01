@@ -1,5 +1,6 @@
+import Logger from '../logger'
 import { Component } from '../component/component'
-import { Application } from '../application'
+
 const SimlerPrototypeSymbol = Symbol('Simler/SimlerPrototype')
 
 export class SlotPrototype {
@@ -7,6 +8,7 @@ export class SlotPrototype {
     constructor(opt: {
         componentPrototype: SlotPrototypeComponent
     }) {
+        Logger.debug('SlotPrototype constructor',opt,this)
         this.componentPrototype = opt.componentPrototype
     }
     render(this: Component) {

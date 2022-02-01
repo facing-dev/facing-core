@@ -1,4 +1,4 @@
-import {createInfoLogger,setupConsoleLogger} from '@simler/logger'
-let Logger = createInfoLogger('web-test')
+import {createLogger,setupConsoleLogger} from '@simler/logger'
+const Logger = createLogger('web-test')
 setupConsoleLogger(Logger)
 export default Logger

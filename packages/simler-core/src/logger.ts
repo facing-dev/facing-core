@@ -1,4 +1,4 @@
-import {createWarnLogger,setupConsoleLogger} from '@simler/logger'
-const Logger = createWarnLogger('@simler/simler-core')
+import {createLogger,setupConsoleLogger} from '@simler/logger'
+const Logger = createLogger('@simler/simler-core')
 setupConsoleLogger(Logger)
 export default Logger

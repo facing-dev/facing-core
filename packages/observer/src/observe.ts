@@ -2,30 +2,29 @@ import { ObservableTypes } from './slot'
 import { travel } from './travel'
 import { get as getSlot, create as createSlot } from './slot'
 import { makeProxy } from './proxy/proxy'
-
 export function makeObserve<T extends ObservableTypes>(obj: T): T {
-    let ret: ObservableTypes | null = null
+    let proxy: ObservableTypes | null = null
     travel(obj, function (obj, fieldName, label, parent) {
         let slot = getSlot(obj)
         if (!slot) {
+            console.log('ff',obj)
             slot = createSlot(obj)
-            ret = makeProxy(obj)
-
+            proxy = makeProxy(obj)
             if (parent) {
                 let parentSlot = getSlot(parent)
                 if (!parentSlot) {
                     console.error(parent)
                     throw 'parent has no slot'
                 }
-                slot.addReference(parentSlot)
+                slot.addSlotReference(parentSlot)
             }
             return true
         }
         return false
     })
-    if (!ret) {
+    if (!proxy) {
         throw ''
     }
-    return ret
+    return proxy
 
 }

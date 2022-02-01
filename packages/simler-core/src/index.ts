@@ -1,7 +1,7 @@
 
 export { Component as Simler } from './component/component'
 export { Component } from './component/decorator/component'
-
+export {default as Logger} from './logger'
 
 import type { Key, ReferenceObject } from './vdom/h/h'
 import type {Component} from './component/component'

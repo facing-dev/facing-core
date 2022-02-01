@@ -16,7 +16,7 @@ export function h(
         children?: Child
     },
     key: string | number) {
-    Logger.info('h function', ...arguments)
+    Logger.debug('h', ...arguments)
 }
 
 export const Fragment = Symbol('Simler/jsx-fragment')

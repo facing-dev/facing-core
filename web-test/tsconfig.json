@@ -10,14 +10,17 @@
             // "@scheduler/*": [
             //     "scheduler/src/*"
             // ],
-            // "@observer/*": [
-            //     "observer/src/*"
-            // ],
+            "@simler/observer": [
+                "packages/observer/src"
+            ],
             "@simler/simler-core": [
                 "packages/simler-core/src"
             ],
             "@simler/logger": [
                 "packages/logger/src"
+            ],
+            "@/*":[
+                "web-test/src/*"
             ]
         },
  

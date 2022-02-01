@@ -1,14 +1,19 @@
 
+
+
+
+
+
 export enum Level {
-    DEBUG,
-    INFO,
-    WARN,
-    ASSERT,
-    ERROR,
-    TRACE
+    DEBUG="DEBUG",
+    INFO="INFO",
+    WARN="WARN",
+    ASSERT="ASSERT",
+    ERROR="ERROR",
+    TRACE="TRACE"
 }
 export class Logger {
-    level = Level.DEBUG
+    level = Level.WARN
     handler: { [index: string]: Function[] } = {}
     prefix?: string
     constructor(level: Level, prefix?: string) {
@@ -23,7 +28,7 @@ export class Logger {
         if (level < this.level) {
             return;
         }
-        this.handler[level].forEach(func => func.apply(null, this.prefix!==undefined?[this.prefix+':',...args]:args));
+        this.handler[level].forEach(func => func.apply(null, this.prefix !== undefined ? [this.prefix + ':', ...args] : args));
     }
 
     debug(...args: any[]) {
@@ -46,22 +51,34 @@ export class Logger {
     }
 
 }
-type CreaterArgs = ConstructorParameters<typeof Logger> extends [any,... infer T]?T:never
-export function createWarnLogger(...args:CreaterArgs) {
-    return new Logger(Level.WARN,...args)
-}
-export function createDebugLogger(...args:CreaterArgs) {
-    return new Logger(Level.DEBUG,...args)
-}
-export function createInfoLogger(...args:CreaterArgs) {
-    return new Logger(Level.INFO,...args)
-}
-export function createErrorLogger(...args:CreaterArgs) {
-    return new Logger(Level.ERROR,...args)
+type CreaterArgs = ConstructorParameters<typeof Logger> extends [any, ... infer T] ? T : never
+
+export function createLogger(...args: CreaterArgs) {
+    let level: Level = (localStorage.getItem('_$simler_logger_debug') ?? 'WARN').toUpperCase() as any
+    if (typeof Level[level] === 'undefined') {
+
+        level = Level.WARN
+    }
+
+    return new Logger(level, ...args)
+
 }
 
-export function createAssertLogger(...args:CreaterArgs){
-    return new Logger(Level.ASSERT,...args)
+export function createWarnLogger(...args: CreaterArgs) {
+    return new Logger(Level.WARN, ...args)
+}
+export function createDebugLogger(...args: CreaterArgs) {
+    return new Logger(Level.DEBUG, ...args)
+}
+export function createInfoLogger(...args: CreaterArgs) {
+    return new Logger(Level.INFO, ...args)
+}
+export function createErrorLogger(...args: CreaterArgs) {
+    return new Logger(Level.ERROR, ...args)
+}
+
+export function createAssertLogger(...args: CreaterArgs) {
+    return new Logger(Level.ASSERT, ...args)
 }
 
 export function setupConsoleLogger(logger: Logger) {
@@ -103,4 +120,5 @@ export function setupConsoleLogger(logger: Logger) {
         console.assert(...args);
     })
 }
+
 

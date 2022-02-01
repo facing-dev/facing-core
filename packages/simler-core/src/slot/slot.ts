@@ -1,19 +1,17 @@
+import Logger from '../logger'
 import { Component } from '../component/component'
-import { Application } from '../application'
 import { VNodeComponent } from '../vdom/vnode/vnode'
 
 const SimlerSymbol = Symbol('Simler/Simler')
 
 export class Slot {
-    // application: Application
     component: SlotComponent
     vnode: VNodeComponent | null = null
     constructor(opt: {
         component: SlotComponent
-        // application: Application
     }) {
+        Logger.debug('Slot constructor',opt,this)
         this.component = opt.component
-        // this.application = opt.application
     }
     destroy(){
         if(!this.vnode){

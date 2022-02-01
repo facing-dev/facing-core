@@ -1,5 +1,6 @@
 import { ObservableTypes } from '../slot'
-import {generateProxyHandler} from './common'
+import { createProxy, GetHandlerMap } from './common'
+import { get as getSlot } from '../slot'
 // let ArrayProxy: Array<any> | null = null
 
 // // const METHOD_KEYS: ((keyof Array<any>) & string)[] = [
@@ -39,21 +40,36 @@ import {generateProxyHandler} from './common'
 
 // //     return pv
 // // }, {})
-
+const METHOD_KEYS: ((keyof Array<any>) & string)[] = [
+    'push',
+    'pop',
+    'shift',
+    'unshift',
+    'splice',
+    'sort',
+    'reverse'
+]
 
 export function makeArrayProxy(array: Array<any>): ObservableTypes {
-
-    // METHOD_KEYS.forEach((name) => {
-    //     let func = array[name]
-    //     if (typeof func !== 'function') {
-    //         throw ''
-    //     }
-    //     Object.defineProperty(array, name, {
-    //         value: new Proxy(func, ArrayMethodProxyHandlers[name]),
-    //         enumerable: false,
-
-    //     })
-    // })
-    let proxy = new Proxy(array,generateProxyHandler() )
+    const GetHandlerMap: GetHandlerMap = new Map()
+    METHOD_KEYS.forEach(key => {
+        GetHandlerMap.set(key, function (target, p, receiver) {
+            if (p !== key) {
+                throw ''
+            }
+            return function (...args: any[]) {
+                let slot = getSlot(array)
+                if (!slot) {
+                    throw ''
+                }
+                slot.bundleCalledSymbol = Symbol('Simler/Observer.BuldleCalled')
+                Reflect.get(target, p, receiver).apply(proxy, args)
+                slot.bundleCalledSymbol = null
+            }
+        })
+    })
+    let proxy = createProxy(array, {
+        getHandlerMap: GetHandlerMap
+    })
     return proxy
 }

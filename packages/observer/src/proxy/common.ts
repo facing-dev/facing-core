@@ -1,9 +1,27 @@
-import {get as getSlot, isObservableType ,ObservableTypes} from '../slot'
+import { get as getSlot, isObservableType, ObservableTypes } from '../slot'
 import { makeObserve } from '../observe'
 import { scheduleObserved } from './utils'
-export function generateProxyHandler<T extends ObservableTypes>(handler?:ProxyHandler<T>):ProxyHandler<T>{
-    const proxyHandler:ProxyHandler<T>={
+
+export type GetHandlerMap = Map<any, ProxyHandler<any>['get'] extends infer T | undefined ? T : never>
+
+export function createProxy(obj: ObservableTypes, opt: {
+    getHandlerMap?: GetHandlerMap,
+}) {
+
+    const handler: ProxyHandler<ObservableTypes> = {
+        get(target: ObservableTypes, p: string | symbol, receiver: any): any {
+            if (opt.getHandlerMap) {
+                for (const key of opt.getHandlerMap.keys()) {
+                    if (key === p) {
+                        return opt.getHandlerMap.get(key)!(target, p, receiver)
+                    }
+
+                }
+            }
+            return Reflect.get(target, p, receiver)
+        },
         set(target, name, value, receiver) {
+            console.log('ss',arguments)
             let slot = getSlot(target)
             if (!slot) {
                 console.error(target)
@@ -13,20 +31,21 @@ export function generateProxyHandler<T extends ObservableTypes>(handler?:ProxyHa
             if (isObservableType(oldValue)) {
                 let oldSlot = getSlot(oldValue)
                 if (oldSlot) {
-                    oldSlot.removeReference(slot)
+                    oldSlot.removeSlotReference(slot)
                 }
             }
             if (isObservableType(value)) {
+                console.log('bb')
                 value = makeObserve(value)
             }
             let newSlot = getSlot(value)
             if (newSlot) {
-                newSlot.addReference(slot)
+                newSlot.addSlotReference(slot)
             }
-    
+
             scheduleObserved(target)
             return Reflect.set(target, name, value, receiver)
-    
+
         },
         deleteProperty: function (target, property: string) {
             let value = Reflect.get(target, property)
@@ -38,13 +57,14 @@ export function generateProxyHandler<T extends ObservableTypes>(handler?:ProxyHa
             if (isObservableType(value)) {
                 let valueSlot = getSlot(value)
                 if (valueSlot) {
-                    valueSlot.removeReference(slot)
+                    valueSlot.removeSlotReference(slot)
                 }
-    
+
             }
             scheduleObserved(target)
             return Reflect.deleteProperty(target, property)
         }
     }
-    return proxyHandler
+
+    return new Proxy(obj, handler)
 }

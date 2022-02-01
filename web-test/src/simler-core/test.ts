@@ -1,4 +1,4 @@
-// // import Logger from '../logger'
+import Logger from '@/logger'
 import { Simler, Component } from "@simler/simler-core"
 
 
@@ -10,9 +10,11 @@ import temp from './test.temp'
 export class TestComp extends Simler{
     constructor(){
         super()
-        // Logger.info('TestComp cons',this)
+        Logger.debug('TestComp constructor',this)
     }
 }
 
-let t = new TestComp()
-export default {}
+
+Logger.debug(TestComp)
+let ins = new TestComp()
+Logger.debug('ind', ins)

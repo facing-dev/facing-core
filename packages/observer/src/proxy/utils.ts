@@ -9,16 +9,26 @@ export function scheduleObserved(obj: ObservableTypes) {
         console.error(obj)
         throw 'Can not schedule unobserved object'
     }
-    function step(slot: Slot) {
-        slot.records.forEach(function (record) {
-            record.watchers.forEach(function (watcher) {
-                watcher(obj)
-            })
+    if(slot.bundleCalledSymbol && slot.bundleCalledSymbol===slot.currentCalledSymbol){
+        return
+    }
+    const calledSymbol = slot.bundleCalledSymbol ?? Symbol('Simler/Observer.Called')
 
-        })
-        slot.slotReferences.forEach(function (ref) {
-            step(ref.slot)
-        })
+    function step(slot: Slot) {
+        if(calledSymbol === slot.currentCalledSymbol){
+            return
+        }
+        slot.currentCalledSymbol = calledSymbol
+        for (const agent of slot.objectObserverRefrenceAgentIterator) {
+            agent.records.forEach((record) => {
+                record.watchers.forEach(function (watcher) {
+                    watcher(obj)
+                })
+            })
+        }
+        for (const sr of slot.slotReferenceIterator) {
+            step(sr.slot)
+        }
     }
     step(slot)
 }

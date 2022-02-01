@@ -1,25 +1,32 @@
-// import * as Observer from '@observer/observer'
-// let O = new Observer.ObjectObserver()
+import Logger from '@/logger'
+import { Observer, Record } from '@simler/observer'
+let O = new Observer()
 
-// let obj:any[]=[]
-// let p = O.makeObjectObservable(obj,{
-//     record:Observer.createRecord((record)=>{
-//         record.watchers.push(function(){
-//             console.log('wat',arguments)
-//         })
-//     })
-// });
+let obj: any[] = []
+let record = new Record()
+record.watchers.push(function () {
+    Logger.debug('wat', arguments)
+})
 
-// (window as any).p = p.object
-// let z = p.object
-// z.push({})
-// console.log('----')
-// z[0].s=123
-// console.log('----')
-// z[0].s={}
-// console.log('----')
-// z[0].s.f=123
+let p = O.observe(obj, {
+    record
+});
+
+(window as any).p = p.object
+let z = p.object
+
+z.push({})
+z.push({})
+z.push({})
+Logger.debug('----')
+z[0].s = 123
+Logger.debug('----')
+z[0].s = {}
+Logger.debug('----')
+z[0].s.f = 123
+console.log(z)
 // delete z[0].s.f
 
-// export default function(){}
-export {}
+
+
+export default function () { }

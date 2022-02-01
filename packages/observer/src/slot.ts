@@ -1,11 +1,11 @@
-import { Record } from './record'
 
+import type { ObserverRefrenceAgent } from './observer'
 interface SlotReference {
     slot: Slot,
     // referenceCount: number
 }
 
-const ObjectObserverSymbol = Symbol('Simler/ObjectObserver')
+const ObjectObserverSymbol = Symbol('Simler/Observer')
 
 export function isObservableType(obj: any): obj is ObservableTypes {
     if (obj === null) {
@@ -27,21 +27,42 @@ type MakeTypesObservable<T extends Object> = T & {
 export type ObservableTypes = MakeTypesObservable<Array<any> | { [index: string]: any }>
 
 export class Slot {
-    records: Map<Record, Record> = new Map()
-    slotReferences: Map<Slot, SlotReference> = new Map()
-    addReference(slot: Slot) {
-        if (this.slotReferences.has(slot)) {
+    #slotReferences: Map<Slot, SlotReference> = new Map()
+    #objectObserverRefrenceAgents: Map<ObserverRefrenceAgent<any>, ObserverRefrenceAgent<any>> = new Map()
+    bundleCalledSymbol: Symbol | null = null
+    currentCalledSymbol: Symbol | null = null
+    addSlotReference(slot: Slot) {
+        if (this.#slotReferences.has(slot)) {
             return
         }
-        this.slotReferences.set(slot, {
+        this.#slotReferences.set(slot, {
             slot
         })
     }
-    removeReference(slot: Slot) {
-        if (!this.slotReferences.has(slot)) {
+    removeSlotReference(slot: Slot) {
+        if (!this.#slotReferences.has(slot)) {
             return
         }
-        this.slotReferences.delete(slot)
+        this.#slotReferences.delete(slot)
+    }
+    get slotReferenceIterator() {
+        return this.#slotReferences.values()
+    }
+    addObjectObserverRefrenceAgent(agent: ObserverRefrenceAgent<any>) {
+        if (this.#objectObserverRefrenceAgents.has(agent)) {
+            return
+        }
+        this.#objectObserverRefrenceAgents.set(agent, agent)
+    }
+
+    removeObjectObserverRefrenceAgent(agent: ObserverRefrenceAgent<any>) {
+        if (!this.#objectObserverRefrenceAgents.has(agent)) {
+            return
+        }
+        this.#objectObserverRefrenceAgents.delete(agent)
+    }
+    get objectObserverRefrenceAgentIterator() {
+        return this.#objectObserverRefrenceAgents.values()
     }
 }
 
@@ -53,6 +74,7 @@ export function create(obj: ObservableTypes) {
             value: new Slot()
         })
     }
+    console.log('cc',obj)
     return get(obj)!
 }
 
