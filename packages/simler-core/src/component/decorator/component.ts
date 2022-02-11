@@ -1,18 +1,15 @@
 import Logger from '../../logger'
-import { Component as Comp } from "../component";
-
+import { Component as Comp, InstanceComponentConstructor } from "../component";
+import { VNode } from '../../vdom/vnode/vnode'
 import * as SlotPrototype from '../../slot/slotPrototype'
-type InstanceComponent = {
-    new(prop?: any): Comp
-}
-export function Component(opt: {
-    render: () => void
-}) {
 
-    return function (cons: InstanceComponent): InstanceComponent {
+export function Component(opt: {
+    render: () => VNode
+}) {
+    return function (cons: InstanceComponentConstructor): InstanceComponentConstructor {
         Logger.debug('Component decorator ', arguments)
         let slot = SlotPrototype.create(cons.prototype)
-        slot.render = opt.render
+        slot._render = opt.render
         return cons
     }
 }

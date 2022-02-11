@@ -1,6 +1,6 @@
 import Logger from '../logger'
 import { Component } from '../component/component'
-
+import  { VNodeElement,VNode } from 'src/vdom/vnode/vnode'
 const SimlerPrototypeSymbol = Symbol('Simler/SimlerPrototype')
 
 export class SlotPrototype {
@@ -11,8 +11,16 @@ export class SlotPrototype {
         Logger.debug('SlotPrototype constructor',opt,this)
         this.componentPrototype = opt.componentPrototype
     }
-    render(this: Component) {
 
+    _render(this: Component):VNode {
+        throw '_render not implemented'
+    }
+    render(component:Component):VNodeElement {
+        const vnode = this._render.apply(component)
+        if(! (vnode instanceof VNodeElement)){
+            throw 'root of a component must be a html element'
+        }
+        return vnode
     }
 }
 

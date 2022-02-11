@@ -6,7 +6,7 @@ export type Properties = {
 }
 
 export type RawProperties = {
-    [index: string]: string | string[] | object | Function | boolean | number;
+    [index: string]: any//string | string[] | object | Function | boolean | number;
 }
 
 export function applyProperties(properties: Properties, el: HTMLElement) {

@@ -1,1 +1,2 @@
-import "./observer/main"
+// import "./observer/main"
+import "./simler-core/test"
