@@ -10,11 +10,20 @@ export function isComponentConstructor(v: Function): v is InstanceComponentConst
 }
 
 export class Component {
+
     constructor() {
         Logger.debug('Component base constructor', this)
         let slot = Slot.create({
             component: this
         })
+    }
+    $render() {
+        console.log('lg render')
+        const slot = Slot.getNotNull(this)
+
+        const vnode = slot.render()
+        slot.vnode.updateVNodeElement(vnode)
+
     }
 }
 

@@ -1,7 +1,8 @@
 import Logger from '@/logger'
-export default function () {
-  Logger.debug('render',arguments)
-  return <div >{'1'}{'2'}<div a="1" key=""><div a="2">1</div>1<div a="3"></div></div></div>
+import { TestComp } from './test'
+export default function (this: TestComp) {
+  // Logger.debug('render',arguments)
+  return <div >{'1'}{'2'}<div a="1" key=""><div a="2">{this.num}</div>1<div a="3"></div></div></div>
 }
 
 

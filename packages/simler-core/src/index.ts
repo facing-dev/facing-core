@@ -3,9 +3,10 @@ export { Component as Simler } from './component/component'
 export { Component } from './component/decorator/component'
 export { default as Logger } from './logger'
 
-import type { Key, ReferenceObject } from './vdom/h/h'
+import type { Key } from './vdom/vnode/vnode'
+import type { ReferenceObject } from './vdom/h/h'
 import type { Component } from './component/component'
-
+export {Application} from './application'
 declare global {
   namespace JSX {
     type IfEquals<X, Y, A, B> =

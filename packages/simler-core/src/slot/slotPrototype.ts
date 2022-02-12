@@ -1,6 +1,6 @@
 import Logger from '../logger'
 import { Component } from '../component/component'
-import  { VNodeElement,VNode } from 'src/vdom/vnode/vnode'
+import  { VNodeElement,VNode } from '../vdom/vnode/vnode'
 const SimlerPrototypeSymbol = Symbol('Simler/SimlerPrototype')
 
 export class SlotPrototype {
@@ -43,4 +43,13 @@ export function create(componentPrototype: SlotPrototypeComponent) {
 
 export function get(comp: SlotPrototypeComponent) {
     return comp[SimlerPrototypeSymbol] ?? null
+}
+
+
+
+export function getNotNull(comp:SlotPrototypeComponent){
+    const slot = get(comp)
+    if(!slot){
+        throw 'component\'s prototype slot is null'
+    }
 }

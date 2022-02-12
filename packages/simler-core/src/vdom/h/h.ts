@@ -79,11 +79,12 @@ export function h(
     if(typeof target === 'function' && isComponentConstructor(target)){
         return new VNodeComponent({
             componentConstructor:target,
-            key:key
+            key:key,
+            rawProperties:props
         })
     }
 
-    
+    throw ''
 
 }
 
