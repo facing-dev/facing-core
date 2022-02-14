@@ -1,15 +1,15 @@
-interface Record {
+export interface Record {
     callbackFunction: Function
     params: any[] | null
 }
 
-interface Layer {
-    records: Record[]
-    deferMS: false | number
+export interface Layer {
+    records: Set<Record>
+    beforeRecords: Set<Record> | null
+    afterRecords: Set<Record> | null
 }
 
-
-export default class Scheduler {
+export class Scheduler {
     private layerMap: Map<string, Layer> = new Map()
     private scheduled = false
     createLayer(name: string) {
@@ -17,12 +17,12 @@ export default class Scheduler {
             throw `Schedule layer ${name} existed`
         }
         let layer: Layer = {
-            records: [],
-            deferMS: 0
+            records: new Set(),
+            beforeRecords: null,
+            afterRecords: null
         }
         this.layerMap.set(name, layer)
         return layer
-
     }
     getLayer(name: string) {
         if (!this.layerMap.has(name)) {
@@ -34,28 +34,38 @@ export default class Scheduler {
         if (!this.scheduled) {
             this.scheduled = true
             let self = this
-            let deferMS: number = 0
             function task() {
                 for (let ite of self.layerMap) {
                     let layer = ite[1]
-                    let records = layer.records
-                    layer.records = []
-                    for (let record of records) {
-                        record.callbackFunction.apply({}, record.params === null ? [] : record.params)
-                    }
-                    if (layer.deferMS === false) {
+                    if (layer.records.size === 0) {
                         continue
-                    } else {
-                        deferMS = layer.deferMS
-                        run()
-                        return
                     }
-
+                    let records = Array.from(layer.records.values())
+                    layer.records.clear()
+                    if (records.length > 0) {
+                        let beforeRecords = layer.beforeRecords
+                        let afterRecords = layer.afterRecords
+                        if (beforeRecords) {
+                            for (let record of beforeRecords) {
+                                record.callbackFunction.apply({}, record.params === null ? [] : record.params)
+                            }
+                        }
+                        for (let record of records) {
+                            record.callbackFunction.apply({}, record.params === null ? [] : record.params)
+                        }
+                        if (afterRecords) {
+                            for (let record of afterRecords) {
+                                record.callbackFunction.apply({}, record.params === null ? [] : record.params)
+                            }
+                        }
+                    }
+                    run()
+                    return
                 }
                 self.scheduled = false
             }
             function run() {
-                window.setTimeout(task, deferMS)
+                window.setTimeout(task, 0)
             }
             run()
         }

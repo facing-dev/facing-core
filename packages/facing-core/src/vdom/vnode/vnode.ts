@@ -4,20 +4,42 @@ import { Reference } from './../ref'
 import { RawProperties, Properties, parseRawProperties, applyProperties, updateProperties } from './respect/property'
 import { Listeners, parseRawListeners, updateListeners, applyListeners } from './respect/listener'
 import { hasSameConstructor } from '../utils'
-import { get as getSlot } from '../../slot/slot'
+import { getNotNull as getSlot } from '../../slot/slot'
+import type { Application } from '../../application'
 
 interface VNodeHooks<VNode> {
-    create: () => void
+    create: (application: Application) => void
     update: (newVNode: VNode) => void
     destroy: () => void
 }
 
-interface VNodeHTMLBaseConstructorOptions<HTMLNodeType extends Node> {
-    // htmlNode: HTMLNodeType
+interface VNodeBaseConstructorOptions {
+
+}
+export class VNodeBase implements VNodeBaseConstructorOptions {
+    #application: Application | null = null
+    get application() {
+        if (!this.#application) {
+            throw ''
+        }
+        return this.#application
+    }
+    set application(application: Application) {
+        this.#application = application
+    }
+    constructor(opt: VNodeBaseConstructorOptions) {
+
+    }
+}
+interface VNodeHTMLBaseConstructorOptions extends VNodeBaseConstructorOptions {
 }
 export type Key = string | number | symbol | null
-export class VNodeHTMLBase<HTMLNodeType extends Node> implements VNodeHTMLBaseConstructorOptions<HTMLNodeType>{
+export class VNodeHTMLBase<HTMLNodeType extends Node> extends VNodeBase implements VNodeHTMLBaseConstructorOptions {
+    constructor(opt: VNodeHTMLBaseConstructorOptions) {
+        super(opt)
+    }
     private _htmlNode: HTMLNodeType | null = null
+
     set htmlNode(htmlNode: HTMLNodeType) {
         this._htmlNode = htmlNode
     }
@@ -27,37 +49,20 @@ export class VNodeHTMLBase<HTMLNodeType extends Node> implements VNodeHTMLBaseCo
         }
         return this._htmlNode
     }
-    // constructor(opt: VNodeHTMLBaseConstructorOptions<HTMLNodeType>) {
-    //     // this.htmlNode = opt.htmlNode
-    // }
-    // protected create() {
-
-    // }
-    // update(newVNode: VNodeHTMLBase<HTMLNodeType>) {
-    //     // if(newVNode)
-    //     // if (oldVNode === null) {
-    //     //     this.create()
-    //     // }
-    //     // else {
-    //     //     this.htmlNode = oldVNode.htmlNode
-    //     // }
-    // }
-    // destroy() {
-
-    // }
 }
 
-interface VNodeTextConstructorOptions extends VNodeHTMLBaseConstructorOptions<Text> {
+interface VNodeTextConstructorOptions extends VNodeHTMLBaseConstructorOptions {
     text: string
 }
 
 export class VNodeText extends VNodeHTMLBase<Text> implements VNodeTextConstructorOptions, VNodeHooks<VNodeText> {
     text: string;
     constructor(opt: VNodeTextConstructorOptions) {
-        super()
+        super(opt)
         this.text = opt.text
     }
-    create() {
+    create(application: Application) {
+        this.application = application
         this.htmlNode = document.createTextNode(this.text)
     }
     update(newVNode: VNodeText) {
@@ -74,21 +79,25 @@ export class VNodeText extends VNodeHTMLBase<Text> implements VNodeTextConstruct
     }
 }
 
-interface VNodeElementRootConstructorOptions {
+interface VNodeElementRootConstructorOptions extends VNodeBaseConstructorOptions {
     htmlElement: HTMLElement
     componentVNode: VNodeComponent
 }
 
-export class VNodeElementRoot implements VNodeElementRootConstructorOptions {
+export class VNodeElementRoot extends VNodeBase implements VNodeElementRootConstructorOptions {
     htmlElement: HTMLElement
     componentVNode: VNodeComponent
+
     constructor(opt: VNodeElementRootConstructorOptions) {
+        super(opt)
         this.htmlElement = opt.htmlElement
         this.componentVNode = opt.componentVNode
+
     }
-    mount() {
+    mount(application: Application) {
+        this.application = application
         this.htmlElement.innerHTML = ''
-        this.componentVNode.create()
+        this.componentVNode.create(application)
 
         if (!this.componentVNode.elementVNode) {
             throw ''
@@ -98,7 +107,7 @@ export class VNodeElementRoot implements VNodeElementRootConstructorOptions {
 }
 
 
-interface VNodeElementBaseConstructorOptions extends VNodeHTMLBaseConstructorOptions<HTMLElement> {
+interface VNodeElementBaseConstructorOptions extends VNodeHTMLBaseConstructorOptions {
     tag: string
     rawProperties: RawProperties | null
     key: Key
@@ -117,7 +126,7 @@ export class VNodeElement extends VNodeHTMLBase<HTMLElement> implements VNodeEle
     listeners: Listeners | null
     componentVNode: VNodeComponent | null
     constructor(opt: VNodeElementBaseConstructorOptions) {
-        super()
+        super(opt)
         this.componentVNode = opt.componentVNode
         this.tag = opt.tag
         this.rawProperties = opt.rawProperties
@@ -131,7 +140,8 @@ export class VNodeElement extends VNodeHTMLBase<HTMLElement> implements VNodeEle
         this.children = opt.children
         this.reference = opt.reference
     }
-    create() {
+    create(application: Application) {
+        this.application = application
         this.htmlNode = document.createElement(this.tag)
         {
             let ret = updateListeners(this.listeners, null)
@@ -145,7 +155,7 @@ export class VNodeElement extends VNodeHTMLBase<HTMLElement> implements VNodeEle
         this.applyReference()
         if (this.children) {
             this.children.forEach(child => {
-                child.create()
+                child.create(this.application)
                 this.htmlNode.appendChild(child.htmlNode)
             })
         }
@@ -189,7 +199,7 @@ export class VNodeElement extends VNodeHTMLBase<HTMLElement> implements VNodeEle
                     nextChildren.push(oldChild)
                 } else {
                     oldChild.destroy()
-                    newChild.create()
+                    newChild.create(this.application)
                     this.htmlNode.replaceChild(newChild.htmlNode, oldChild.htmlNode)
                     nextChildren = nextChildren ?? []
                     nextChildren.push(newChild)
@@ -201,7 +211,7 @@ export class VNodeElement extends VNodeHTMLBase<HTMLElement> implements VNodeEle
         }
         for (; i < newChildren.length; i++) {
             const newChild = newChildren[i]
-            newChild.create()
+            newChild.create(this.application)
             this.htmlNode.appendChild(newChild.htmlNode)
             nextChildren = nextChildren ?? []
             nextChildren.push(newChild)
@@ -250,16 +260,17 @@ export class VNodeElement extends VNodeHTMLBase<HTMLElement> implements VNodeEle
 //     }
 // }
 
-interface VNodeComponentConstructorOptions {
-    componentConstructor:typeof Component// InstanceComponentConstructor
+interface VNodeComponentConstructorOptions extends VNodeBaseConstructorOptions {
+    componentConstructor: typeof Component// InstanceComponentConstructor
     // component: Component
     rawProperties: RawProperties | null
     key: Key
     // reference: Reference<any> | null
     // elementVNode: VNodeElement | null
 }
-export class VNodeComponent implements VNodeComponentConstructorOptions, VNodeHooks<VNodeComponent> {
-    componentConstructor:typeof Component// InstanceComponentConstructor
+export class VNodeComponent extends VNodeBase implements VNodeComponentConstructorOptions, VNodeHooks<VNodeComponent> {
+    componentConstructor: typeof Component// InstanceComponentConstructor
+
     #component: Component | null = null
     set component(comp: Component) {
         this.#component = comp
@@ -291,23 +302,24 @@ export class VNodeComponent implements VNodeComponentConstructorOptions, VNodeHo
         return this.elementVNode.htmlNode
     }
     constructor(opt: VNodeComponentConstructorOptions) {
+        super(opt)
         this.componentConstructor = opt.componentConstructor
-        // this.component = opt.component
         this.rawProperties = opt.rawProperties
         this.key = opt.key
-
     }
 
-    create() {
+    create(application: Application) {
+        this.application = application
         const ins = new this.componentConstructor()
         this.component = ins
         const slot = getSlot(ins)
-        if (!slot) {
-            throw ''
-        }
-        slot.vnode = this
+      
+        slot.init({
+            vnode: this,
+            application: this.application
+        })
         const vnodeElement = slot.render()
-        vnodeElement.create()
+        vnodeElement.create(this.application)
         this.elementVNode = vnodeElement
 
     }
@@ -323,6 +335,8 @@ export class VNodeComponent implements VNodeComponentConstructorOptions, VNodeHo
         this.elementVNode.update(newVNode)
     }
     destroy(): void {
+        const slot = getSlot(this.component)
+        slot.destroy()
         if (this.elementVNode) {
             this.elementVNode.destroy()
         }

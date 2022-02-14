@@ -1,68 +1,84 @@
 import Logger from '../logger'
 import { Component } from '../component/component'
 import { VNode, VNodeComponent } from '../vdom/vnode/vnode'
-import { get as getPrototypeSlot } from './slotPrototype'
-
-// import { updateVNode } from '../vdom/vnode/vnode'
+import { getNotNull as getPrototypeSlot } from './slotPrototype'
+import type { Application } from '../'
+import { Record as ObserverRecord, ObserverRefrenceAgent } from '@facing/observer'
+import { Record as SchedulerRecord } from '@facing/scheduler'
 const FacingSymbol = Symbol('Facing/Facing')
-
 export class Slot {
     component: SlotComponent
-    #vnode: VNodeComponent|null=null
-    set vnode(vnode:VNodeComponent){
-        this.#vnode=vnode
+    observerReferenceAgents: ObserverRefrenceAgent<any>[] | null = null
+    schedulerRenderRecord: SchedulerRecord
+    init(opt: {
+        application: Application
+        vnode: VNodeComponent
+    }) {
+        if (this.#application) {
+            throw ''
+        }
+        this.application = opt.application
+        this.vnode = opt.vnode
+        const prototypeSlot = getPrototypeSlot(this.component)
+        if (prototypeSlot.observedPropertyNames) {
+            const record = new ObserverRecord()
+            record.watchers.push(() => {
+                this.application.schedulerLayerRender.records.add(this.schedulerRenderRecord)
+                this.application.scheduler.schedule()
+            })
+            prototypeSlot.observedPropertyNames.forEach((name) => {
+                const agent = this.application.observer.observe((this.component as any)[name], {
+                    record: record
+                });
+                (this.component as any)[name] = agent.object;
+                this.observerReferenceAgents = this.observerReferenceAgents ?? []
+                this.observerReferenceAgents.push(agent)
+            })
+        }
     }
-    get vnode(){
-        if(!this.#vnode){
+    #vnode: VNodeComponent | null = null
+    set vnode(vnode: VNodeComponent) {
+        this.#vnode = vnode
+    }
+    get vnode() {
+        if (!this.#vnode) {
             throw ''
         }
         return this.#vnode
     }
-    // parent: VNodeComponent | HTMLElement|null = null // HTMLElement for application root component
+    #application: Application | null = null
+    get application() {
+        if (!this.#application) {
+            throw ''
+        }
+        return this.#application
+    }
+    set application(application: Application) {
+        this.#application = application
+    }
+    // boundComponentRender: Function
     constructor(opt: {
         component: SlotComponent
     }) {
         Logger.debug('Slot constructor', opt, this)
         this.component = opt.component
-        // this.vnode = new VNodeComponent({
-        //     component: this.component,
-        // })
+
+        this.schedulerRenderRecord = {
+            callbackFunction: this.component.$render.bind(this.component),
+            params: null
+        }
+ 
+
     }
     render() {
         const prototypeSlot = getPrototypeSlot(this.component)
-        if (!prototypeSlot) {
-            throw ''
-        }
         const vnode = prototypeSlot.render(this.component)
         return vnode
-        // if (!this.vnode.elementVNode) {//new vnode, first render
-        //     this.vnode.elementVNode = vnode
-        //     vnode.create()
-        // } else {
-        //     if (updateVNode(this.vnode.elementVNode, vnode)) {//update
-        //         this.vnode.elementVNode.update(vnode)
-        //     } else {//replace
-        //         vnode.create()
-        //         if (this.parent) {
-        //             if(this.parent instanceof VNodeComponent){//render parent component to replace this
-        //                 const parentSlot = get(this.parent.component)
-        //                 if (!parentSlot) {
-        //                     throw ''
-        //                 }
-        //                 parentSlot.render()
-        //             }else{//this is root component, replace html directly
-        //                 this.parent.innerHTML=''
-        //                 this.parent.append(vnode.htmlNode)
-        //             }
-                  
-        //         } else {
-        //             throw ''
-        //         }
-        //     }
-        // }
     }
     destroy() {
-        // this.vnode.destroy()
+        if (this.observerReferenceAgents) {
+            this.observerReferenceAgents.forEach(agent => agent.release())
+        }
     }
 
 }
@@ -86,9 +102,9 @@ export function get(comp: SlotComponent) {
     return comp[FacingSymbol] ?? null
 }
 
-export function getNotNull(comp:SlotComponent){
+export function getNotNull(comp: SlotComponent) {
     const slot = get(comp)
-    if(!slot){
+    if (!slot) {
         throw 'component\'s slot is null'
     }
     return slot

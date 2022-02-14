@@ -21,7 +21,7 @@ export function createProxy(obj: ObservableTypes, opt: {
             return Reflect.get(target, p, receiver)
         },
         set(target, name, value, receiver) {
-            console.log('ss',arguments)
+            console.log('ss', arguments)
             let slot = getSlot(target)
             if (!slot) {
                 console.error(target)
@@ -42,9 +42,9 @@ export function createProxy(obj: ObservableTypes, opt: {
             if (newSlot) {
                 newSlot.addSlotReference(slot)
             }
-
+            const ret = Reflect.set(target, name, value, receiver)
             scheduleObserved(target)
-            return Reflect.set(target, name, value, receiver)
+            return ret
 
         },
         deleteProperty: function (target, property: string) {

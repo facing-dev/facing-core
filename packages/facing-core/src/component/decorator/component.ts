@@ -10,6 +10,5 @@ export function Component(opt: {
         Logger.debug('Component decorator ', arguments)
         let slot = SlotPrototype.create(cons.prototype)
         slot._render = opt.render
-        // return cons
     }
 }
