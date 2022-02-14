@@ -2,7 +2,8 @@
   "name": "@facing/scheduler",
   "version": "0.2.4",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "compile": "tsc",
     "prepublishOnly": "npm run compile",
