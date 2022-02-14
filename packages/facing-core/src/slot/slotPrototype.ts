@@ -1,23 +1,24 @@
 import Logger from '../logger'
 import { Component } from '../component/component'
-import  { VNodeElement,VNode } from '../vdom/vnode/vnode'
+import { VNodeElement, VNode } from '../vdom/vnode/vnode'
 const FacingPrototypeSymbol = Symbol('Facing/FacingPrototype')
 
 export class SlotPrototype {
     componentPrototype: SlotPrototypeComponent
+    observedPropertyNames: Set<string> | null = null
     constructor(opt: {
         componentPrototype: SlotPrototypeComponent
     }) {
-        Logger.debug('SlotPrototype constructor',opt,this)
+        Logger.debug('SlotPrototype constructor', opt, this)
         this.componentPrototype = opt.componentPrototype
     }
 
-    _render(this: Component):VNode {
+    _render(this: Component): VNode {
         throw '_render not implemented'
     }
-    render(component:Component):VNodeElement {
+    render(component: Component): VNodeElement {
         const vnode = this._render.apply(component)
-        if(! (vnode instanceof VNodeElement)){
+        if (!(vnode instanceof VNodeElement)) {
             throw 'root of a component must be a html element'
         }
         return vnode
@@ -47,9 +48,10 @@ export function get(comp: SlotPrototypeComponent) {
 
 
 
-export function getNotNull(comp:SlotPrototypeComponent){
+export function getNotNull(comp: SlotPrototypeComponent) {
     const slot = get(comp)
-    if(!slot){
+    if (!slot) {
         throw 'component\'s prototype slot is null'
     }
+    return slot 
 }

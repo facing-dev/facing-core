@@ -16,11 +16,9 @@
   },
   "dependencies": {
     "@facing/logger": "^0.2.5",
-    "@facing/observer": "^0.2.4"
+    "@facing/observer": "^0.2.6",
+    "@facing/scheduler": "^0.2.10"
   },
-  "files": [
-    "dist/"
-  ],
   "gitHead": "a6c26dacb882c1cbfa889048fd529a81df0bf4ea",
   "publishConfig": {
     "access": "public"

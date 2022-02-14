@@ -1,5 +1,5 @@
 import Logger from '@/logger'
-import { Facing, Component } from "@facing/facing-core"
+import { Facing, Component, Observe } from "@facing/facing-core"
 
 
 import temp from './test.temp'
@@ -8,17 +8,17 @@ import temp from './test.temp'
     render: temp
 })
 export class TestComp extends Facing {
+    @Observe
+    data = {
+        num: 8
+    }
     constructor() {
         super()
         Logger.debug('TestComp constructor', this)
-        setInterval(()=>{
-            this.num++
-            this.$render()
-        },1000)
-
+        setInterval(() => {
+            this.data.num++
+        }, 1000)
     }
-    num = 8
-  
 }
 
 
