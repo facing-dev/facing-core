@@ -1,7 +1,7 @@
 import Logger from '../logger'
 import { Component } from '../component/component'
 import  { VNodeElement,VNode } from '../vdom/vnode/vnode'
-const SimlerPrototypeSymbol = Symbol('Simler/SimlerPrototype')
+const FacingPrototypeSymbol = Symbol('Facing/FacingPrototype')
 
 export class SlotPrototype {
     componentPrototype: SlotPrototypeComponent
@@ -25,12 +25,12 @@ export class SlotPrototype {
 }
 
 type SlotPrototypeComponent = Component & {
-    [SimlerPrototypeSymbol]?: SlotPrototype
+    [FacingPrototypeSymbol]?: SlotPrototype
 }
 
 export function create(componentPrototype: SlotPrototypeComponent) {
     if (!get(componentPrototype)) {
-        Object.defineProperty(componentPrototype, SimlerPrototypeSymbol, {
+        Object.defineProperty(componentPrototype, FacingPrototypeSymbol, {
             enumerable: false,
             value: new SlotPrototype({
                 componentPrototype: componentPrototype
@@ -42,7 +42,7 @@ export function create(componentPrototype: SlotPrototypeComponent) {
 
 
 export function get(comp: SlotPrototypeComponent) {
-    return comp[SimlerPrototypeSymbol] ?? null
+    return comp[FacingPrototypeSymbol] ?? null
 }
 
 

@@ -1,5 +1,5 @@
 
-export { Component as Simler } from './component/component'
+export { Component as Facing } from './component/component'
 export { Component } from './component/decorator/component'
 export { default as Logger } from './logger'
 

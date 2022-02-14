@@ -1,5 +1,5 @@
 import Logger from '@/logger'
-import { Simler, Component } from "@simler/simler-core"
+import { Facing, Component } from "@facing/facing-core"
 
 
 import temp from './test.temp'
@@ -7,7 +7,7 @@ import temp from './test.temp'
 @Component({
     render: temp
 })
-export class TestComp extends Simler {
+export class TestComp extends Facing {
     constructor() {
         super()
         Logger.debug('TestComp constructor', this)

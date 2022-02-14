@@ -1,5 +1,5 @@
 import Logger from '@/logger'
-import { Observer, Record } from '@simler/observer'
+import { Observer, Record } from '@facing/observer'
 let O = new Observer()
 
 let obj: any[] = []

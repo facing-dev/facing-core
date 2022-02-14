@@ -12,7 +12,7 @@ export function scheduleObserved(obj: ObservableTypes) {
     if(slot.bundleCalledSymbol && slot.bundleCalledSymbol===slot.currentCalledSymbol){
         return
     }
-    const calledSymbol = slot.bundleCalledSymbol ?? Symbol('Simler/Observer.Called')
+    const calledSymbol = slot.bundleCalledSymbol ?? Symbol('Facing/Observer.Called')
 
     function step(slot: Slot) {
         if(calledSymbol === slot.currentCalledSymbol){

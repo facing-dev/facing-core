@@ -1,5 +1,5 @@
 {
-  "name": "@simler/simler-core",
+  "name": "@facing/facing-core",
   "version": "0.2.4",
   "description": "",
   "main": "dist/index.js",
@@ -10,15 +10,18 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "typescript": "^4.5.4"
   },
   "dependencies": {
-    "@simler/logger": "^0.2.3"
+    "@facing/logger": "^0.2.3"
   },
   "files": [
     "dist/"
   ],
-  "gitHead": "a6c26dacb882c1cbfa889048fd529a81df0bf4ea"
+  "gitHead": "a6c26dacb882c1cbfa889048fd529a81df0bf4ea",
+  "publishConfig": {
+    "access": "public"
+  }
 }

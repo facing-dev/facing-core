@@ -10,13 +10,13 @@
             // "@scheduler/*": [
             //     "scheduler/src/*"
             // ],
-            "@simler/observer": [
+            "@facing/observer": [
                 "packages/observer/src"
             ],
-            "@simler/simler-core": [
-                "packages/simler-core/src"
+            "@facing/facing-core": [
+                "packages/facing-core/src"
             ],
-            "@simler/logger": [
+            "@facing/logger": [
                 "packages/logger/src"
             ],
             "@/*":[
@@ -36,6 +36,6 @@
         // "../*/dist/**/*",
     ],
     // "references": [{
-    //     "path": "../simler-core",
+    //     "path": "../facing-core",
     // }]
 }

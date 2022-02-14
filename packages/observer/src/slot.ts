@@ -5,7 +5,7 @@ interface SlotReference {
     // referenceCount: number
 }
 
-const ObjectObserverSymbol = Symbol('Simler/Observer')
+const ObjectObserverSymbol = Symbol('Facing/Observer')
 
 export function isObservableType(obj: any): obj is ObservableTypes {
     if (obj === null) {

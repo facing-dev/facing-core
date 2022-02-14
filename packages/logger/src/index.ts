@@ -54,7 +54,7 @@ export class Logger {
 type CreaterArgs = ConstructorParameters<typeof Logger> extends [any, ... infer T] ? T : never
 
 export function createLogger(...args: CreaterArgs) {
-    let level: Level = (localStorage.getItem('_$simler_logger_debug') ?? 'WARN').toUpperCase() as any
+    let level: Level = (localStorage.getItem('_$facing_logger_debug') ?? 'WARN').toUpperCase() as any
     if (typeof Level[level] === 'undefined') {
 
         level = Level.WARN

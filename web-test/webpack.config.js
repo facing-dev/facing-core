@@ -15,9 +15,9 @@ const config = merge(baseConfig, {
     alias: {
       'core-js': path.resolve(__dirname, 'node_modules/core-js'),
       // '@scheduler': path.resolve(__dirname, './scheduler/src/'),
-      '@simler/observer': path.resolve(__dirname, '../packages/observer/src/'),
-      '@simler/simler-core': path.resolve(__dirname, '../packages/simler-core/src/'),
-      '@simler/logger':path.resolve(__dirname, '../packages/logger/src/'),
+      '@facing/observer': path.resolve(__dirname, '../packages/observer/src/'),
+      '@facing/facing-core': path.resolve(__dirname, '../packages/facing-core/src/'),
+      '@facing/logger':path.resolve(__dirname, '../packages/logger/src/'),
       '@':path.resolve(__dirname, 'src/')
       
     }
@@ -66,7 +66,7 @@ const config = merge(baseConfig, {
               }],
               ["@babel/plugin-transform-react-jsx", {
                 runtime: "automatic",
-                importSource: "@simler/simler-core"
+                importSource: "@facing/facing-core"
               }]
             ]
           }
@@ -76,7 +76,7 @@ const config = merge(baseConfig, {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'simler-test',
+      title: 'facing-test',
       template: path.resolve(__dirname, './src/index.html')
     }),
     new ForkTsCheckerWebpackPlugin({

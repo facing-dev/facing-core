@@ -4,7 +4,7 @@ import { VNode, VNodeComponent } from '../vdom/vnode/vnode'
 import { get as getPrototypeSlot } from './slotPrototype'
 
 // import { updateVNode } from '../vdom/vnode/vnode'
-const SimlerSymbol = Symbol('Simler/Simler')
+const FacingSymbol = Symbol('Facing/Facing')
 
 export class Slot {
     component: SlotComponent
@@ -68,13 +68,13 @@ export class Slot {
 }
 
 type SlotComponent = Component & {
-    [SimlerSymbol]?: Slot
+    [FacingSymbol]?: Slot
 }
 
 export function create(opt: ConstructorParameters<typeof Slot>[0]) {
 
     if (!get(opt.component)) {
-        Object.defineProperty(opt.component, SimlerSymbol, {
+        Object.defineProperty(opt.component, FacingSymbol, {
             enumerable: false,
             value: new Slot(opt)
         })
@@ -83,7 +83,7 @@ export function create(opt: ConstructorParameters<typeof Slot>[0]) {
 }
 
 export function get(comp: SlotComponent) {
-    return comp[SimlerSymbol] ?? null
+    return comp[FacingSymbol] ?? null
 }
 
 export function getNotNull(comp:SlotComponent){

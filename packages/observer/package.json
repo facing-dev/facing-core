@@ -1,5 +1,5 @@
 {
-  "name": "@simler/observer",
+  "name": "@facing/observer",
   "version": "0.2.3",
   "description": "",
   "main": "index.js",
@@ -9,12 +9,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "typescript": "^4.5.4"
   },
   "files": [
     "dist/"
   ],
-  "gitHead": "a6c26dacb882c1cbfa889048fd529a81df0bf4ea"
+  "gitHead": "a6c26dacb882c1cbfa889048fd529a81df0bf4ea",
+  "publishConfig": {
+    "access": "public"
+  }
 }

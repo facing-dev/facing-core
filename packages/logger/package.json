@@ -1,5 +1,5 @@
 {
-  "name": "@simler/logger",
+  "name": "@facing/logger",
   "version": "0.2.3",
   "description": "",
   "main": "dist/index.js",
@@ -10,12 +10,15 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "files": [
     "dist/"
   ],
   "dependencies": {
     "typescript": "^4.5.5"
   },
-  "gitHead": "a6c26dacb882c1cbfa889048fd529a81df0bf4ea"
+  "gitHead": "a6c26dacb882c1cbfa889048fd529a81df0bf4ea",
+  "publishConfig": {
+    "access": "public"
+  }
 }

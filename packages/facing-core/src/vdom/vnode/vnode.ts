@@ -1,4 +1,5 @@
-import { Component, InstanceComponentConstructor } from '../../component/component'
+// import { Component, InstanceComponentConstructor } from '../../component/component'
+import { Component } from '../../component/component'
 import { Reference } from './../ref'
 import { RawProperties, Properties, parseRawProperties, applyProperties, updateProperties } from './respect/property'
 import { Listeners, parseRawListeners, updateListeners, applyListeners } from './respect/listener'
@@ -250,7 +251,7 @@ export class VNodeElement extends VNodeHTMLBase<HTMLElement> implements VNodeEle
 // }
 
 interface VNodeComponentConstructorOptions {
-    componentConstructor: InstanceComponentConstructor
+    componentConstructor:typeof Component// InstanceComponentConstructor
     // component: Component
     rawProperties: RawProperties | null
     key: Key
@@ -258,7 +259,7 @@ interface VNodeComponentConstructorOptions {
     // elementVNode: VNodeElement | null
 }
 export class VNodeComponent implements VNodeComponentConstructorOptions, VNodeHooks<VNodeComponent> {
-    componentConstructor: InstanceComponentConstructor
+    componentConstructor:typeof Component// InstanceComponentConstructor
     #component: Component | null = null
     set component(comp: Component) {
         this.#component = comp

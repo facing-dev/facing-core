@@ -62,7 +62,7 @@ export function makeArrayProxy(array: Array<any>): ObservableTypes {
                 if (!slot) {
                     throw ''
                 }
-                slot.bundleCalledSymbol = Symbol('Simler/Observer.BuldleCalled')
+                slot.bundleCalledSymbol = Symbol('Facing/Observer.BuldleCalled')
                 Reflect.get(target, p, receiver).apply(proxy, args)
                 slot.bundleCalledSymbol = null
             }

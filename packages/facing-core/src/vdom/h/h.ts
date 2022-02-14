@@ -1,4 +1,4 @@
-import { Component,InstanceComponentConstructor,isComponentConstructor } from '../../component/component'
+import { Component,isComponentConstructor } from '../../component/component'
 import Logger from '../../logger'
 import { VNode, VNodeComponent, VNodeElement, VNodeText, isVNode,Key } from '../vnode/vnode'
 import { Reference } from './../ref'
@@ -88,5 +88,5 @@ export function h(
 
 }
 
-export const Fragment = Symbol('Simler/jsx-fragment')
+export const Fragment = Symbol('Facing/jsx-fragment')
 
