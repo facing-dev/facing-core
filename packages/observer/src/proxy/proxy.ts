@@ -3,7 +3,11 @@ import { ObservableTypes, get as getSlot, isObservableType } from '../slot'
 import { makeArrayProxy } from './array'
 import { makeObjectProxy } from './object'
 
-
+/**
+ * Make object observable by proxy
+ * @param obj Object will be wrapped by a proxy
+ * @returns Proxied input object
+ */
 export function makeProxy(obj: ObservableTypes) {
     let slot = getSlot(obj)
     if (!slot) {

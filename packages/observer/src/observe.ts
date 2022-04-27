@@ -3,6 +3,11 @@ import { ObservableTypes } from './slot'
 import { travel, TravelIterator } from './travel'
 import { get as getSlot, create as createSlot } from './slot'
 import { makeProxy } from './proxy/proxy'
+/**
+ * Make an object observed
+ * @param obj Object will be observed
+ * @returns Observed input object
+ */
 export function makeObserve<T extends ObservableTypes>(obj: T): T {
     let proxy: ObservableTypes | null = null
     const travelIterator: TravelIterator = function (obj, fieldName, lavel, parent) {

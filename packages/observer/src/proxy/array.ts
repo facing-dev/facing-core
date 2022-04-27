@@ -40,6 +40,10 @@ import { get as getSlot } from '../slot'
 
 // //     return pv
 // // }, {})
+
+/**
+ * Injected array methods
+ */
 const METHOD_KEYS: ((keyof Array<any>) & string)[] = [
     'push',
     'pop',
@@ -49,21 +53,29 @@ const METHOD_KEYS: ((keyof Array<any>) & string)[] = [
     'sort',
     'reverse'
 ]
-
+/**
+ * Make array observable
+ * @param array Array
+ * @returns Proxied input array
+ */
 export function makeArrayProxy(array: Array<any>): ObservableTypes {
     const GetHandlerMap: GetHandlerMap = new Map()
     METHOD_KEYS.forEach(key => {
         GetHandlerMap.set(key, function (target, p, receiver) {
             if (p !== key) {
+                //Call handler on a different method, error
                 throw ''
             }
+            //Get the wrappered array method
             return function (...args: any[]) {
                 let slot = getSlot(array)
                 if (!slot) {
                     throw ''
                 }
+                //Make slot bundle observed because of these methods may operate many values at the same time
                 slot.bundleCalledSymbol = Symbol('Facing/Observer.BuldleCalled')
                 Reflect.get(target, p, receiver).apply(proxy, args)
+                
                 slot.bundleCalledSymbol = null
             }
         })
