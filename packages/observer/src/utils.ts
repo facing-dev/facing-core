@@ -1,3 +1,4 @@
+import Logger from './logger'
 import { ObservableTypes } from './slot'
 export function checkObjectFieldNames(obj: ObservableTypes, fieldNames?: string | string[]) {
     let fNs: null | string[] = null
@@ -11,7 +12,7 @@ export function checkObjectFieldNames(obj: ObservableTypes, fieldNames?: string 
     }
     if (Array.isArray(obj)) {
         if (fNs !== null) {
-            console.error(obj, fNs)
+            Logger.error(obj, fNs)
             throw ("checkObjectFieldNames failed")
         }
     }

@@ -1,3 +1,4 @@
+import Logger from '../logger'
 import { ObservableTypes, get as getSlot, isObservableType } from '../slot'
 import { makeArrayProxy } from './array'
 import { makeObjectProxy } from './object'
@@ -6,7 +7,7 @@ import { makeObjectProxy } from './object'
 export function makeProxy(obj: ObservableTypes) {
     let slot = getSlot(obj)
     if (!slot) {
-        console.error(obj)
+        Logger.error(obj)
         throw "Can't create proxy for unobserved object"
     }
     let ret: ObservableTypes | null = null

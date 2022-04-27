@@ -1,10 +1,11 @@
+import Logger from './logger'
 import { ObservableTypes } from './slot'
-import { travel } from './travel'
+import { travel, TravelIterator } from './travel'
 import { get as getSlot, create as createSlot } from './slot'
 import { makeProxy } from './proxy/proxy'
 export function makeObserve<T extends ObservableTypes>(obj: T): T {
     let proxy: ObservableTypes | null = null
-    travel(obj, function (obj, fieldName, label, parent) {
+    const travelIterator: TravelIterator = function (obj, fieldName, lavel, parent) {
         let slot = getSlot(obj)
         if (!slot) {
             slot = createSlot(obj)
@@ -12,7 +13,7 @@ export function makeObserve<T extends ObservableTypes>(obj: T): T {
             if (parent) {
                 let parentSlot = getSlot(parent)
                 if (!parentSlot) {
-                    console.error(parent)
+                    Logger.error(parent)
                     throw 'parent has no slot'
                 }
                 slot.addSlotReference(parentSlot)
@@ -20,7 +21,8 @@ export function makeObserve<T extends ObservableTypes>(obj: T): T {
             return true
         }
         return false
-    })
+    }
+    travel(obj, travelIterator)
     if (!proxy) {
         throw ''
     }

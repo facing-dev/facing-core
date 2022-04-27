@@ -1,3 +1,4 @@
+import Logger from '../logger'
 import { get as getSlot, isObservableType, ObservableTypes } from '../slot'
 import { makeObserve } from '../observe'
 import { scheduleObserved } from './utils'
@@ -21,10 +22,9 @@ export function createProxy(obj: ObservableTypes, opt: {
             return Reflect.get(target, p, receiver)
         },
         set(target, name, value, receiver) {
-            console.log('ss', arguments)
             let slot = getSlot(target)
             if (!slot) {
-                console.error(target)
+                Logger.error(target)
                 throw 'target has no slot'
             }
             let oldValue = Reflect.get(target, name, receiver)
@@ -35,7 +35,6 @@ export function createProxy(obj: ObservableTypes, opt: {
                 }
             }
             if (isObservableType(value)) {
-                console.log('bb')
                 value = makeObserve(value)
             }
             let newSlot = getSlot(value)
@@ -51,7 +50,7 @@ export function createProxy(obj: ObservableTypes, opt: {
             let value = Reflect.get(target, property)
             let slot = getSlot(target)
             if (!slot) {
-                console.error(target)
+                Logger.error(target)
                 throw 'target has no slot'
             }
             if (isObservableType(value)) {

@@ -14,9 +14,11 @@
   "devDependencies": {
     "typescript": "^4.5.4"
   },
-
   "gitHead": "a6c26dacb882c1cbfa889048fd529a81df0bf4ea",
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@facing/logger": "^0.2.6"
   }
 }

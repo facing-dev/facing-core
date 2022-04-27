@@ -1,3 +1,4 @@
+import Logger from '../logger'
 import { ObservableTypes, get as getSlot, Slot, isObservableType } from '../slot'
 export function eachOf(obj: ObservableTypes, ite: (obj: any) => void) {
     Object.values(obj).forEach(v => ite(v))
@@ -6,7 +7,7 @@ export function eachOf(obj: ObservableTypes, ite: (obj: any) => void) {
 export function scheduleObserved(obj: ObservableTypes) {
     let slot = getSlot(obj)
     if (!slot) {
-        console.error(obj)
+        Logger.error(obj)
         throw 'Can not schedule unobserved object'
     }
     if(slot.bundleCalledSymbol && slot.bundleCalledSymbol===slot.currentCalledSymbol){
