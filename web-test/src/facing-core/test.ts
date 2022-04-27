@@ -1,4 +1,4 @@
-import Logger from '@/logger'
+import Logger from './logger'
 import { Facing, Component, Observe } from "@facing/facing-core"
 
 

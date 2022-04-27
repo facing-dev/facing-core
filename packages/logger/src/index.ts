@@ -5,13 +5,14 @@
 
 
 export enum Level {
-    DEBUG="DEBUG",
-    INFO="INFO",
-    WARN="WARN",
-    ASSERT="ASSERT",
-    ERROR="ERROR",
-    TRACE="TRACE"
+    DEBUG,
+    INFO,
+    WARN,
+    ASSERT,
+    ERROR,
+    TRACE
 }
+
 export class Logger {
     level = Level.WARN
     handler: { [index: string]: Function[] } = {}
@@ -51,12 +52,11 @@ export class Logger {
     }
 
 }
-type CreaterArgs = ConstructorParameters<typeof Logger> extends [any, ... infer T] ? T : never
+type CreatorArgs = ConstructorParameters<typeof Logger> extends [any, ... infer T] ? T : never
 
-export function createLogger(...args: CreaterArgs) {
-    let level: Level = (localStorage.getItem('_$facing_logger_debug') ?? 'WARN').toUpperCase() as any
-    if (typeof Level[level] === 'undefined') {
-
+export function createLogger(...args: CreatorArgs) {
+    let level: Level = (Level as any)[(localStorage.getItem('_$facing_logger_debug') ?? 'WARN').toUpperCase()]
+    if (typeof level === 'undefined' || typeof level !== 'string') {
         level = Level.WARN
     }
 
@@ -64,20 +64,20 @@ export function createLogger(...args: CreaterArgs) {
 
 }
 
-export function createWarnLogger(...args: CreaterArgs) {
+export function createWarnLogger(...args: CreatorArgs) {
     return new Logger(Level.WARN, ...args)
 }
-export function createDebugLogger(...args: CreaterArgs) {
+export function createDebugLogger(...args: CreatorArgs) {
     return new Logger(Level.DEBUG, ...args)
 }
-export function createInfoLogger(...args: CreaterArgs) {
+export function createInfoLogger(...args: CreatorArgs) {
     return new Logger(Level.INFO, ...args)
 }
-export function createErrorLogger(...args: CreaterArgs) {
+export function createErrorLogger(...args: CreatorArgs) {
     return new Logger(Level.ERROR, ...args)
 }
 
-export function createAssertLogger(...args: CreaterArgs) {
+export function createAssertLogger(...args: CreatorArgs) {
     return new Logger(Level.ASSERT, ...args)
 }
 
@@ -117,7 +117,13 @@ export function setupConsoleLogger(logger: Logger) {
         if (!console.assert) {
             return;
         }
+        if (typeof args[0] === 'string') {
+            const [arg1, arg2, ...extraArgs] = args
+            args = [arg2, arg1, ...extraArgs]
+
+        }
         console.assert(...args);
+
     })
 }
 

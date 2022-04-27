@@ -74,7 +74,6 @@ export function create(obj: ObservableTypes) {
             value: new Slot()
         })
     }
-    console.log('cc',obj)
     return get(obj)!
 }
 

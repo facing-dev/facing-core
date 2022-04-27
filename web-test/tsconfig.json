@@ -7,9 +7,9 @@
         "jsx": "preserve",
         "emitDeclarationOnly":true,
         "paths": {
-            // "@scheduler/*": [
-            //     "scheduler/src/*"
-            // ],
+            "@facing/scheduler": [
+                "packages/scheduler/src"
+            ],
             "@facing/observer": [
                 "packages/observer/src"
             ],

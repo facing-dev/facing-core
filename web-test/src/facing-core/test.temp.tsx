@@ -1,4 +1,4 @@
-import Logger from '@/logger'
+import Logger from './logger'
 import { TestComp } from './test'
 export default function (this: TestComp) {
   // Logger.debug('render',arguments)

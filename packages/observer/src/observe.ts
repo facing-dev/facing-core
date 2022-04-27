@@ -7,7 +7,6 @@ export function makeObserve<T extends ObservableTypes>(obj: T): T {
     travel(obj, function (obj, fieldName, label, parent) {
         let slot = getSlot(obj)
         if (!slot) {
-            console.log('ff',obj)
             slot = createSlot(obj)
             proxy = makeProxy(obj)
             if (parent) {
