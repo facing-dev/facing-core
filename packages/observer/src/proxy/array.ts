@@ -1,6 +1,7 @@
 import { ObservableTypes } from '../slot'
 import { createProxy, GetHandlerMap } from './common'
 import { get as getSlot } from '../slot'
+import type { Observer } from '../observer'
 // let ArrayProxy: Array<any> | null = null
 
 // // const METHOD_KEYS: ((keyof Array<any>) & string)[] = [
@@ -56,16 +57,20 @@ const METHOD_KEYS: ((keyof Array<any>) & string)[] = [
 /**
  * Make array observable
  * @param array Array
+ * @param observer Manager observer
  * @returns Proxied input array
  */
-export function makeArrayProxy(array: Array<any>): ObservableTypes {
+export function makeArrayProxy(array: Array<any>, observer: Observer): ObservableTypes {
+
     const GetHandlerMap: GetHandlerMap = new Map()
     METHOD_KEYS.forEach(key => {
         GetHandlerMap.set(key, function (target, p, receiver) {
+
             if (p !== key) {
                 //Call handler on a different method, error
                 throw ''
             }
+
             //Get the wrappered array method
             return function (...args: any[]) {
                 let slot = getSlot(array)
@@ -75,13 +80,16 @@ export function makeArrayProxy(array: Array<any>): ObservableTypes {
                 //Make slot bundle observed because of these methods may operate many values at the same time
                 slot.bundleCalledSymbol = Symbol('Facing/Observer.BuldleCalled')
                 Reflect.get(target, p, receiver).apply(proxy, args)
-                
+
                 slot.bundleCalledSymbol = null
             }
         })
     })
+
     let proxy = createProxy(array, {
-        getHandlerMap: GetHandlerMap
+        getHandlerMap: GetHandlerMap,
+        observer
     })
+
     return proxy
 }

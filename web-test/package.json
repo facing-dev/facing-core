@@ -11,7 +11,10 @@
   "license": "MIT",
   "dependencies": {
     "@babel/plugin-transform-react-jsx": "^7.16.7",
-    "@facing/logger": "0.0.9",
+    "@facing/facing-core": "^0.2.6",
+    "@facing/logger": "^0.2.6",
+    "@facing/observer": "^0.2.6",
+    "@facing/scheduler": "^0.2.10",
     "core-js": "^3.20.3",
     "webpack-merge": "^5.8.0"
   },

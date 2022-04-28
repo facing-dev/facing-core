@@ -2,6 +2,7 @@ import Logger from '../logger'
 import { get as getSlot, isObservableType, ObservableTypes } from '../slot'
 import { makeObserve } from '../observe'
 import { scheduleObserved } from './utils'
+import type {Observer} from '../observer'
 
 export type GetHandlerMap = Map<any, ProxyHandler<any>['get'] extends infer T | undefined ? T : never>
 /**
@@ -12,6 +13,7 @@ export type GetHandlerMap = Map<any, ProxyHandler<any>['get'] extends infer T | 
  */
 export function createProxy(obj: ObservableTypes, opt: {
     getHandlerMap?: GetHandlerMap,
+    observer:Observer
 }) {
 
     const handler: ProxyHandler<ObservableTypes> = {
@@ -39,17 +41,17 @@ export function createProxy(obj: ObservableTypes, opt: {
                 let oldSlot = getSlot(oldValue)
                 if (oldSlot) {
                     //If old value is observed by this object, remove this from target slot's reference list
-                    oldSlot.removeSlotReference(slot)
+                    oldSlot.removeParentSlot(slot)
                 }
             }
             if (isObservableType(value)) {
                 //Make value observed
-                value = makeObserve(value)
+                value = makeObserve(value,opt.observer)
             }
             let newSlot = getSlot(value)
             if (newSlot) {
                 //Add this to new value's slot's reference list
-                newSlot.addSlotReference(slot)
+                newSlot.addParentSlot(slot)
             }
             //Set value normal
             const ret = Reflect.set(target, name, value, receiver)
@@ -71,7 +73,7 @@ export function createProxy(obj: ObservableTypes, opt: {
                 let valueSlot = getSlot(value)
                 if (valueSlot) {
                     //If old value is observed by this object, remove this from target slot's reference list
-                    valueSlot.removeSlotReference(slot)
+                    valueSlot.removeParentSlot(slot)
                 }
 
             }

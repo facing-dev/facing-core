@@ -1,5 +1,5 @@
 import { createLogger } from '@/logger'
-import Scheduler from '@facing/scheduler'
+import Scheduler from '@facing/scheduler/src/index'
 
 export default async function () {
     const Logger = createLogger('scheduler')

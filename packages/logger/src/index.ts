@@ -1,20 +1,18 @@
-
-
-
-
-
-
 export enum Level {
     DEBUG,
     INFO,
+    TRACE,
     WARN,
     ASSERT,
     ERROR,
-    TRACE
-}
 
+}
+function callOutput(func: Function, prefix: string | undefined, ...args: any[]) {
+    func.apply(null, prefix !== undefined ? [prefix + ':', ...args] : args)
+}
 export class Logger {
     level = Level.WARN
+    // traceLevel = Level.WARN
     handler: { [index: string]: Function[] } = {}
     prefix?: string
     constructor(level: Level, prefix?: string) {
@@ -29,7 +27,11 @@ export class Logger {
         if (level < this.level) {
             return;
         }
-        this.handler[level].forEach(func => func.apply(null, this.prefix !== undefined ? [this.prefix + ':', ...args] : args));
+
+        this.handler[level].forEach(func => callOutput(func, this.prefix, ...args));
+        // if (level >= this.traceLevel && level !== Level.TRACE) {
+        //     this.handler[Level.TRACE].forEach(func => callOutput(func, undefined, '^^^^^^'));
+        // }
     }
 
     debug(...args: any[]) {
@@ -111,7 +113,8 @@ export function setupConsoleLogger(logger: Logger) {
         if (!console.trace) {
             return;
         }
-        console.trace(...args);
+        console.warn(...args)
+        console.trace('^^^^')
     })
     logger.handler[Level.ASSERT].push((...args: any[]) => {
         if (!console.assert) {

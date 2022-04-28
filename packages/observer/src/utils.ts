@@ -18,3 +18,25 @@ export function checkObjectFieldNames(obj: ObservableTypes, fieldNames?: string 
     }
     return fNs
 }
+
+export function bfs<T>(target: T, iterator: (current: T) => T[] | null) {
+    const arr: T[] = [target]
+    while (arr.length > 0) {
+        const current = arr.shift()!
+        const children = iterator(current)
+        if (children) {
+            arr.push(...children)
+        }
+    }
+}
+export function dfs<T>(target: T, iterator: (current: T) => T[] | null) {
+    const arr: T[] = [target]
+    while (arr.length > 0) {
+        const current = arr.shift()!
+        const children = iterator(current)
+        if (children) {
+            arr.unshift(...children)
+        }
+    }
+}
+

@@ -10,14 +10,14 @@ export function scheduleObserved(obj: ObservableTypes) {
         Logger.error(obj)
         throw 'Can not schedule unobserved object'
     }
-    if(slot.bundleCalledSymbol && slot.bundleCalledSymbol===slot.currentCalledSymbol){
+    if (slot.bundleCalledSymbol && slot.bundleCalledSymbol === slot.currentCalledSymbol) {
         //Break when object scheduled, custom scope
         return
     }
     const calledSymbol = slot.bundleCalledSymbol ?? Symbol('Facing/Observer.Called')
 
     function step(slot: Slot) {
-        if(calledSymbol === slot.currentCalledSymbol){
+        if (calledSymbol === slot.currentCalledSymbol) {
             //Break when slot scheduled, setter scope
             return
         }
@@ -30,9 +30,13 @@ export function scheduleObserved(obj: ObservableTypes) {
                 })
             })
         }
-        for (const sr of slot.slotReferenceIterator) {
-            step(sr.slot)
+        const parentSlots = slot.parentSlots
+        if (parentSlots) {
+            for (const slot of parentSlots) {
+                step(slot)
+            }
         }
+
     }
     step(slot)
 }

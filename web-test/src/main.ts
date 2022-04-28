@@ -1,6 +1,8 @@
-import test from './scheduler/test'
+import testScheduler from './scheduler/test'
+import testObserver from './observer/test'
 async function main(){
-    await test()
+    await testScheduler()
+    await testObserver()
 }
 
 main()

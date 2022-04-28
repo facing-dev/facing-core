@@ -7,18 +7,18 @@
         "jsx": "preserve",
         "emitDeclarationOnly":true,
         "paths": {
-            "@facing/scheduler": [
-                "packages/scheduler/src"
-            ],
-            "@facing/observer": [
-                "packages/observer/src"
-            ],
-            "@facing/facing-core": [
-                "packages/facing-core/src"
-            ],
-            "@facing/logger": [
-                "packages/logger/src"
-            ],
+            // "@facing/scheduler": [
+            //     "packages/scheduler/src"
+            // ],
+            // "@facing/observer": [
+            //     "packages/observer/src"
+            // ],
+            // "@facing/facing-core": [
+            //     "packages/facing-core/src"
+            // ],
+            // "@facing/logger": [
+            //     "packages/logger/src"
+            // ],
             "@/*":[
                 "web-test/src/*"
             ]
@@ -28,7 +28,7 @@
     "include": [
         // 
         "src/**/*",
-        "../packages/*/src/**/*"
+        // "../packages/*/src/**/*"
         // "../*/src/**/*.d.ts",
         // "../*/dist/**/*",
     ],

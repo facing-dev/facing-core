@@ -14,10 +14,10 @@ const config = merge(baseConfig, {
   resolve: {
     alias: {
       'core-js': path.resolve(__dirname, 'node_modules/core-js'),
-      '@facing/scheduler': path.resolve(__dirname, '../packages/scheduler/src/'),
-      '@facing/observer': path.resolve(__dirname, '../packages/observer/src/'),
-      '@facing/facing-core': path.resolve(__dirname, '../packages/facing-core/src/'),
-      '@facing/logger':path.resolve(__dirname, '../packages/logger/src/'),
+      // '@facing/scheduler': path.resolve(__dirname, '../packages/scheduler/src/'),
+      // '@facing/observer': path.resolve(__dirname, '../packages/observer/src/'),
+      // '@facing/facing-core': path.resolve(__dirname, '../packages/facing-core/src/'),
+      // '@facing/logger':path.resolve(__dirname, '../packages/logger/src/'),
       '@':path.resolve(__dirname, 'src/')
       
     }

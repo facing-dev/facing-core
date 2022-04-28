@@ -3,11 +3,6 @@ export interface Record {
     params: any[] | null
 }
 
-// export interface Layer {
-//     records: Set<Record>
-//     beforeRecords: Set<Record> | null
-//     afterRecords: Set<Record> | null
-// }
 
 export class Layer {
     records: Set<Record> = new Set
