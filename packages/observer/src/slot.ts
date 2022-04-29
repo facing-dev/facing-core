@@ -2,6 +2,7 @@
 import type { ObserverRefrenceAgent, Observer } from './observer'
 import Logger from './logger'
 import { bfs } from './utils'
+import { makeProxy } from './proxy/proxy'
 // interface SlotReference {
 //     slot: Slot,
 //     // referenceCount: number
@@ -41,19 +42,34 @@ export class Slot {
      * Proxy should be release if this map is empty, but we could ignore this for reuseable reason
      */
     readonly #objectObserverRefrenceAgents: Map<ObserverRefrenceAgent<any>, ObserverRefrenceAgent<any>> = new Map()
-    //Avoid this slot be proxy scheduled many time in one tick
-    bundleCalledSymbol: Symbol | null = null
+
     //Flag used by proxy schedule strategy to avoid this slot be proxy scheduled many time in one tick
     currentCalledSymbol: Symbol | null = null
     //Flag for gabbage collection
     #garbageCollectionSymbol: Symbol | null = null
     //Manager observer
     readonly #observer: Observer
-    constructor(observer: Observer) {
+    object: ObservableTypes
+    proxiedObject: ObservableTypes
+    constructor(observer: Observer, object: ObservableTypes) {
+        Object.defineProperty(object, ObjectObserverSymbol, {
+            enumerable: false,
+            value: this
+        })
         this.#observer = observer
+        this.object = object
+
+        this.proxiedObject = makeProxy(object, observer)
+
+    }
+    hasParentSlot(slot: Slot) {
+        return this.#observer.hasRelativeSlot(this, slot, 'PARENT')
     }
     addParentSlot(slot: Slot) {
-        return this.#observer.addRelativeSlot(this, slot, 'PARENT')
+        const ret = this.#observer.addRelativeSlot(this, slot, 'PARENT')
+
+
+        return ret
         // if (this.#slotReferences.has(slot)) {
         //     return
         // }
@@ -63,7 +79,9 @@ export class Slot {
     }
     removeParentSlot(slot: Slot) {
         // this.#observer.removeRelativeSlot(this, slot, 'PARENT')
+
         const ret = this.#removeParentSlotNoRelease(slot)
+
         this.#tryRelease()
         return ret
 
@@ -76,8 +94,10 @@ export class Slot {
         return this.#observer.removeRelativeSlot(this, slot, 'PARENT')
     }
     #tryRelease() {
+
         const symbol = Symbol()
         function couldRelease(slot: Slot) {
+
             let ret: boolean | undefined = undefined
             if (slot.#objectObserverRefrenceAgents.size === 0) {
                 let parentSlots = slot.parentSlots
@@ -96,6 +116,7 @@ export class Slot {
                 }
             }
             if (ret === undefined) {
+
                 ret = false
             }
             if (ret === true) {
@@ -125,24 +146,47 @@ export class Slot {
         }
 
         bfs<Slot>(this, (current) => {
+
             const childSlots = current.childSlots
             if (!childSlots) {
                 return null
             }
             let arr: Slot[] | null = null
+            let releaseSet: Set<Slot> | null = null
+
             for (const childSlot of childSlots) {
+          
                 if (couldRelease(childSlot)) {
+
                     if (!arr) {
                         arr = []
                     }
                     arr.push(childSlot)
+
                 } else {
-                    childSlot.#removeParentSlotNoRelease(current)
+
+                    if (!releaseSet) {
+                        releaseSet = new Set
+                    }
+                    releaseSet.add(childSlot)
+
+
+                    // this.released()
                 }
             }
+            if (releaseSet) {
+                for (const slot of releaseSet.values()) {
+                    slot.#removeParentSlotNoRelease(current)
+                    this.#observer.slotReleasedTestCallback?.(current);
+                }
+            }
+
             return arr
         })
     }
+    // released() {
+
+    // }
     // get slotReferenceIterator() {
     //     return this.#slotReferences.values()
     // }
@@ -178,10 +222,11 @@ export class Slot {
 
 export function create(obj: ObservableTypes, observer: Observer) {
     if (!get(obj)) {
-        Object.defineProperty(obj, ObjectObserverSymbol, {
-            enumerable: false,
-            value: new Slot(observer)
-        })
+        new Slot(observer, obj)
+        // Object.defineProperty(obj, ObjectObserverSymbol, {
+        //     enumerable: false,
+        //     value: 
+        // })
     }
     return get(obj)!
 }

@@ -1,2 +1,4 @@
-import { createWarnLogger } from '@facing/logger/src/index'
-export default createWarnLogger('@facing/observer')
+import { createWarnLogger,setupConsoleLogger } from '@facing/logger/src/index'
+const Logger  =  createWarnLogger('@facing/observer')
+setupConsoleLogger(Logger)
+export default Logger

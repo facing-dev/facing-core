@@ -12,12 +12,18 @@ import type { Observer } from './observer'
  */
 export function makeObserve<T extends ObservableTypes>(obj: T, observer: Observer): T {
     let proxy: ObservableTypes | null = null
-    const travelIterator: TravelIterator = function (obj, fieldName, lavel, parent) {
+
+    const travelIterator: TravelIterator = function (obj, fieldName, level, parent) {
         let slot = getSlot(obj)
+        let newObserved = false
         if (!slot) {
             slot = createSlot(obj, observer)
-            proxy = makeProxy(obj, observer)
+            newObserved = true
         }
+        if (level === 0) {
+            proxy = slot.proxiedObject
+        }
+
 
         if (parent) {
             let parentSlot = getSlot(parent)
@@ -25,14 +31,35 @@ export function makeObserve<T extends ObservableTypes>(obj: T, observer: Observe
                 Logger.error(parent)
                 throw 'parent has no slot'
             }
-            return slot.addParentSlot(parentSlot) === 'SUCCESS'
-        } else {
-            return true
+
+            // if (slot.hasParentSlot(parentSlot)) {
+            //     return false
+            // }
+            slot.addParentSlot(parentSlot)
         }
+        return  newObserved
+        // if (parent) {
+        //     let parentSlot = getSlot(parent)
+        //     if (!parentSlot) {
+        //         Logger.error(parent)
+        //         throw 'parent has no slot'
+        //     }
+
+        //     if (slot.hasParentSlot(parentSlot)) {
+        //         return false
+        //     }
+        //     slot.addParentSlot(parentSlot)
+        //     return true
+        // } else {
+        //     return true
+        // }
     }
     travel(obj, travelIterator)
+
     if (!proxy) {
+
         throw ''
+
     }
     return proxy
 

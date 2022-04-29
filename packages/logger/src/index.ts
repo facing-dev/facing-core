@@ -24,10 +24,10 @@ export class Logger {
     }
 
     output(level: Level, args: any[]) {
+
         if (level < this.level) {
             return;
         }
-
         this.handler[level].forEach(func => callOutput(func, this.prefix, ...args));
         // if (level >= this.traceLevel && level !== Level.TRACE) {
         //     this.handler[Level.TRACE].forEach(func => callOutput(func, undefined, '^^^^^^'));
@@ -41,6 +41,7 @@ export class Logger {
         this.output(Level.WARN, args)
     }
     error(...args: any[]) {
+
         this.output(Level.ERROR, args)
     }
     info(...args: any[]) {
@@ -86,9 +87,11 @@ export function createAssertLogger(...args: CreatorArgs) {
 export function setupConsoleLogger(logger: Logger) {
 
     logger.handler[Level.ERROR].push((...args: any[]) => {
+
         if (!console.error) {
             return;
         }
+      
         console.error(...args);
     })
     logger.handler[Level.WARN].push((...args: any[]) => {

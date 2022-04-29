@@ -3,6 +3,7 @@ import { Record } from './record'
 import { ObservableTypes, get as getSlot } from './slot'
 import { makeObserve } from './observe'
 import type { Slot } from './slot'
+
 type AgentConstructorOpt = { record?: Record, observer: Observer }
 export class ObserverRefrenceAgent<T extends ObservableTypes> {
 
@@ -43,10 +44,70 @@ export class ObserverRefrenceAgent<T extends ObservableTypes> {
         slot.removeObjectObserverRefrenceAgent(this)
     }
 }
-
+export class SchedulerBundleTask {
+    changedAgents: Set<ObserverRefrenceAgent<any>> = new Set
+}
 export class Observer {
     #parentToChildSlotsMap: Map<Slot, Set<Slot>>
     #childToParentSlotsMap: Map<Slot, Set<Slot>>
+    get parentToChildSlotsMap() {
+        return this.#parentToChildSlotsMap
+    }
+    get childToParentSlotsMap() {
+        return this.#childToParentSlotsMap
+    }
+    // #scheduleSymbol: Symbol | null = null
+    #schedulerBundleTask: SchedulerBundleTask | null = null
+    scheduleBundleTask(cb: (task: SchedulerBundleTask) => void) {
+
+        const newTask = this.#schedulerBundleTask === null
+        if (newTask) {
+            this.#schedulerBundleTask = new SchedulerBundleTask()
+        }
+        const task = this.#schedulerBundleTask!
+
+        cb(task)
+
+
+        if (newTask) {
+
+            while (task.changedAgents.size > 0) {
+                const copyAgents = new Set(task.changedAgents)
+                task.changedAgents.clear()
+                for (const agent of copyAgents.values()) {
+                    agent.records.forEach((record) => {
+                        record.watchers.forEach(function (watcher) {
+                            watcher(agent.object)
+                        })
+                    })
+                }
+            }
+
+            this.#schedulerBundleTask = null
+        }
+    }
+    #hasRelativeSlot(map: Map<Slot, Set<Slot>>, keySlot: Slot, relativeSlot: Slot): boolean {
+        let set = map.get(keySlot)
+        if (!set) {
+            return false
+        }
+        return set.has(relativeSlot)
+
+    }
+    hasRelativeSlot(slot: Slot, relativeSlot: Slot, type: 'PARENT' | 'CHILD') {
+        let parentSlot = relativeSlot
+        let childSlot = slot
+        if (type === 'CHILD') {
+            parentSlot = slot
+            childSlot = relativeSlot
+        }
+        const ret1 = this.#hasRelativeSlot(this.#childToParentSlotsMap, childSlot, parentSlot)
+        const ret2 = this.#hasRelativeSlot(this.#parentToChildSlotsMap, parentSlot, childSlot)
+        if (ret1 !== ret2) {
+            throw ''
+        }
+        return ret1
+    }
     #setRelativeSlot(map: Map<Slot, Set<Slot>>, keySlot: Slot, relativeSlot: Slot): 'EXISTED' | 'SUCCESS' {
         let set = map.get(keySlot)
         if (!set) {
@@ -60,6 +121,7 @@ export class Observer {
         set.add(relativeSlot)
         return 'SUCCESS'
     }
+
     addRelativeSlot(slot: Slot, relativeSlot: Slot, type: 'PARENT' | 'CHILD') {
         let parentSlot = relativeSlot
         let childSlot = slot
@@ -81,7 +143,7 @@ export class Observer {
             // Logger.warn('Relative slot not existed')
             return 'NOT EXISTED'
         }
-        set.add(relativeSlot)
+        set.delete(relativeSlot)
         return 'SUCCESS'
     }
     removeRelativeSlot(slot: Slot, relativeSlot: Slot, type: 'PARENT' | 'CHILD') {
@@ -116,4 +178,5 @@ export class Observer {
             observer: this
         })
     }
+    slotReleasedTestCallback: ((proxied: Slot) => void) | null = null
 }

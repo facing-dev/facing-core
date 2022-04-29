@@ -65,23 +65,26 @@ export function makeArrayProxy(array: Array<any>, observer: Observer): Observabl
     const GetHandlerMap: GetHandlerMap = new Map()
     METHOD_KEYS.forEach(key => {
         GetHandlerMap.set(key, function (target, p, receiver) {
-
+       
             if (p !== key) {
                 //Call handler on a different method, error
                 throw ''
             }
-
+        
             //Get the wrappered array method
             return function (...args: any[]) {
                 let slot = getSlot(array)
                 if (!slot) {
                     throw ''
                 }
-                //Make slot bundle observed because of these methods may operate many values at the same time
-                slot.bundleCalledSymbol = Symbol('Facing/Observer.BuldleCalled')
-                Reflect.get(target, p, receiver).apply(proxy, args)
 
-                slot.bundleCalledSymbol = null
+                //Make slot bundle observed because of these methods may operate many values at the same time
+           
+                observer.scheduleBundleTask(()=>{
+          
+                    Reflect.get(target, p, receiver).apply(proxy, args)
+                  
+                })
             }
         })
     })

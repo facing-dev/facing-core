@@ -2,7 +2,7 @@ import Logger from '../logger'
 import { get as getSlot, isObservableType, ObservableTypes } from '../slot'
 import { makeObserve } from '../observe'
 import { scheduleObserved } from './utils'
-import type {Observer} from '../observer'
+import type { Observer } from '../observer'
 
 export type GetHandlerMap = Map<any, ProxyHandler<any>['get'] extends infer T | undefined ? T : never>
 /**
@@ -13,7 +13,7 @@ export type GetHandlerMap = Map<any, ProxyHandler<any>['get'] extends infer T | 
  */
 export function createProxy(obj: ObservableTypes, opt: {
     getHandlerMap?: GetHandlerMap,
-    observer:Observer
+    observer: Observer
 }) {
 
     const handler: ProxyHandler<ObservableTypes> = {
@@ -31,6 +31,8 @@ export function createProxy(obj: ObservableTypes, opt: {
             return Reflect.get(target, p, receiver)
         },
         set(target, name, value, receiver) {
+            
+            
             let slot = getSlot(target)
             if (!slot) {
                 Logger.error(target)
@@ -44,10 +46,14 @@ export function createProxy(obj: ObservableTypes, opt: {
                     oldSlot.removeParentSlot(slot)
                 }
             }
+            
             if (isObservableType(value)) {
+                
                 //Make value observed
-                value = makeObserve(value,opt.observer)
+                value = makeObserve(value, opt.observer)
+                
             }
+          
             let newSlot = getSlot(value)
             if (newSlot) {
                 //Add this to new value's slot's reference list
@@ -57,7 +63,10 @@ export function createProxy(obj: ObservableTypes, opt: {
             const ret = Reflect.set(target, name, value, receiver)
 
             //Trigger observers of this and descendants
-            scheduleObserved(target)
+            opt.observer.scheduleBundleTask((task) => {
+                scheduleObserved(proxy, task)
+            })
+
 
             return ret
 
@@ -82,11 +91,14 @@ export function createProxy(obj: ObservableTypes, opt: {
             const ret = Reflect.deleteProperty(target, property)
 
             //Trigger observers of this and descendants
-            scheduleObserved(target)
+            opt.observer.scheduleBundleTask((task) => {
+                scheduleObserved(proxy, task)
+            })
 
             return ret
         }
     }
 
-    return new Proxy(obj, handler)
+    const proxy = new Proxy(obj, handler)
+    return proxy
 }
