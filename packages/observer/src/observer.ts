@@ -47,9 +47,13 @@ export class ObserverRefrenceAgent<T extends ObservableTypes> {
 export class SchedulerBundleTask {
     changedAgents: Set<ObserverRefrenceAgent<any>> = new Set
 }
+
+type SlotReferenceMap = Map<Slot, Map<Slot, number>>
 export class Observer {
-    #parentToChildSlotsMap: Map<Slot, Set<Slot>>
-    #childToParentSlotsMap: Map<Slot, Set<Slot>>
+    // #parentToChildSlotsMap: Map<Slot, Set<Slot>>
+    // #childToParentSlotsMap: Map<Slot, Set<Slot>>
+    #parentToChildSlotsMap: SlotReferenceMap
+    #childToParentSlotsMap: SlotReferenceMap
     get parentToChildSlotsMap() {
         return this.#parentToChildSlotsMap
     }
@@ -86,86 +90,169 @@ export class Observer {
             this.#schedulerBundleTask = null
         }
     }
-    #hasRelativeSlot(map: Map<Slot, Set<Slot>>, keySlot: Slot, relativeSlot: Slot): boolean {
-        let set = map.get(keySlot)
-        if (!set) {
-            return false
+    #getRelativeSlotCount(map: SlotReferenceMap, keySlot: Slot, relativeSlot: Slot): number {
+        let m = map.get(keySlot)
+        if (!m) {
+            return 0
         }
-        return set.has(relativeSlot)
+        const count = m.get(relativeSlot) ?? 0
+        if (count < 0) {
+            throw ''
+        }
+        return count
 
     }
-    hasRelativeSlot(slot: Slot, relativeSlot: Slot, type: 'PARENT' | 'CHILD') {
+    getRelativeSlotCount(slot: Slot, relativeSlot: Slot, type: 'PARENT' | 'CHILD') {
         let parentSlot = relativeSlot
         let childSlot = slot
         if (type === 'CHILD') {
             parentSlot = slot
             childSlot = relativeSlot
         }
-        const ret1 = this.#hasRelativeSlot(this.#childToParentSlotsMap, childSlot, parentSlot)
-        const ret2 = this.#hasRelativeSlot(this.#parentToChildSlotsMap, parentSlot, childSlot)
+        const ret1 = this.#getRelativeSlotCount(this.#childToParentSlotsMap, childSlot, parentSlot)
+        const ret2 = this.#getRelativeSlotCount(this.#parentToChildSlotsMap, parentSlot, childSlot)
         if (ret1 !== ret2) {
             throw ''
         }
         return ret1
     }
-    #setRelativeSlot(map: Map<Slot, Set<Slot>>, keySlot: Slot, relativeSlot: Slot): 'EXISTED' | 'SUCCESS' {
-        let set = map.get(keySlot)
-        if (!set) {
-            set = new Set
-            map.set(keySlot, set)
+    #setRelativeSlotCount(map: SlotReferenceMap, keySlot: Slot, relativeSlot: Slot, count: number) {
+        if (count < 0) {
+            throw ''
         }
-        if (set.has(relativeSlot)) {
-            // Logger.warn('Relative slot already existed')
-            return 'EXISTED'
+        let m = map.get(keySlot)
+        if (m) {
+            if (count === 0) {
+                m.delete(relativeSlot)
+            } else {
+
+                m.set(relativeSlot, count)
+            }
+            if (m.size === 0) {
+                map.delete(keySlot)
+            }
+
+        } else {
+            if (count === 0) {
+                return
+            } else {
+                const m: Map<Slot, number> = new Map
+                map.set(keySlot, m)
+                m.set(relativeSlot, count)
+            }
         }
-        set.add(relativeSlot)
-        return 'SUCCESS'
     }
+    setRelativeSlotCount(slot: Slot, relativeSlot: Slot, count: number, type: 'PARENT' | 'CHILD') {
+        let parentSlot = relativeSlot
+        let childSlot = slot
+        if (type === 'CHILD') {
+            parentSlot = slot
+            childSlot = relativeSlot
+        }
+        this.#setRelativeSlotCount(this.#childToParentSlotsMap, childSlot, parentSlot, count)
+        this.#setRelativeSlotCount(this.#parentToChildSlotsMap, parentSlot, childSlot, count)
+    }
+    // #addRelativeSlot(map: SlotReferenceMap, keySlot: Slot, relativeSlot: Slot): number {
+    //     let m = map.get(keySlot)
+    //     let count = 0
+    //     if (!m) {
+    //         m = new Map
+    //         map.set(keySlot, m)
+    //     }
+    //     count = m.get(relativeSlot) ?? 0
+    //     count += 1
+    //     m.set(relativeSlot, count)
+    //     return count
+    // }
 
     addRelativeSlot(slot: Slot, relativeSlot: Slot, type: 'PARENT' | 'CHILD') {
-        let parentSlot = relativeSlot
-        let childSlot = slot
-        if (type === 'CHILD') {
-            parentSlot = slot
-            childSlot = relativeSlot
-        }
+        // let parentSlot = relativeSlot
+        // let childSlot = slot
+        // if (type === 'CHILD') {
+        //     parentSlot = slot
+        //     childSlot = relativeSlot
+        // }
 
-        const ret1 = this.#setRelativeSlot(this.#childToParentSlotsMap, childSlot, parentSlot)
-        const ret2 = this.#setRelativeSlot(this.#parentToChildSlotsMap, parentSlot, childSlot)
-        if (ret1 !== ret2) {
-            throw ''
-        }
-        return ret1
+        let count = this.getRelativeSlotCount(slot, relativeSlot, type)//this.#addRelativeSlot(this.#childToParentSlotsMap, childSlot, parentSlot)
+        count += 1
+        this.setRelativeSlotCount(slot, relativeSlot, count, type)
+        return count
     }
-    #removeRelativeSlot(map: Map<Slot, Set<Slot>>, keySlot: Slot, relativeSlot: Slot): 'NOT EXISTED' | 'SUCCESS' {
-        let set = map.get(keySlot)
-        if (!set || !set.has(relativeSlot)) {
-            // Logger.warn('Relative slot not existed')
-            return 'NOT EXISTED'
-        }
-        set.delete(relativeSlot)
-        return 'SUCCESS'
-    }
+    // #removeRelativeSlot(map: SlotReferenceMap, keySlot: Slot, relativeSlot: Slot): number {
+    //     let m = map.get(keySlot)
+    //     if (!m) {
+
+    //         console.error(keySlot, relativeSlot)
+    //         throw ''
+    //     }
+    //     let count = m.get(relativeSlot)
+    //     if (count === undefined) {
+    //         console.error('z')
+    //         throw ''
+    //     }
+    //     if (count > 0) {
+    //         count -= 1
+    //         if (count === 0) {
+    //             m.delete(relativeSlot)
+    //             if (m.size === 0) {
+    //                 map.delete(keySlot)
+    //             }
+
+    //         } else {
+    //             m.set(relativeSlot, count)
+    //         }
+
+    //     } else {
+    //         throw 'Slot reference is 0 before delete'
+    //     }
+    //     return count
+    // }
     removeRelativeSlot(slot: Slot, relativeSlot: Slot, type: 'PARENT' | 'CHILD') {
-        let parentSlot = relativeSlot
-        let childSlot = slot
-        if (type === 'CHILD') {
-            parentSlot = slot
-            childSlot = relativeSlot
-        }
+        let count = this.getRelativeSlotCount(slot, relativeSlot, type)
+        if (count === 0) {
 
-        let ret1 = this.#removeRelativeSlot(this.#childToParentSlotsMap, childSlot, parentSlot)
-        let ret2 = this.#removeRelativeSlot(this.#parentToChildSlotsMap, parentSlot, childSlot)
-        if (ret1 !== ret2) {
             throw ''
         }
-        return ret1
+        count -= 1
+        this.setRelativeSlotCount(slot, relativeSlot, count, type)
+        return count
+
+
+        // let parentSlot = relativeSlot
+        // let childSlot = slot
+        // if (type === 'CHILD') {
+        //     parentSlot = slot
+        //     childSlot = relativeSlot
+        // }
+
+
+        // let ret1 = this.#removeRelativeSlot(this.#childToParentSlotsMap, childSlot, parentSlot)
+
+        // let ret2 = this.#removeRelativeSlot(this.#parentToChildSlotsMap, parentSlot, childSlot)
+
+        // cc++
+        // if (cc === 2) {
+        //     console.log('ss', slot, relativeSlot, type)
+        //     // throw ''
+        // }
+        // if (ret1 !== ret2) {
+        //     throw ''
+        // }
+
+        // return ret1
     }
-    getChildSlotSet(slot: Slot) {
+    clearRelativeSlot(slot: Slot, relativeSlot: Slot, type: 'PARENT' | 'CHILD') {
+        let count = this.getRelativeSlotCount(slot, relativeSlot, type)
+        if (count === 0) {
+            throw ''
+        }
+        this.setRelativeSlotCount(slot, relativeSlot, 0, type)
+    }
+    getChildSlotMap(slot: Slot) {
         return this.#parentToChildSlotsMap.get(slot) ?? null
 
     }
-    getParentSlotSet(slot: Slot) {
+    getParentSlotMap(slot: Slot) {
         return this.#childToParentSlotsMap.get(slot) ?? null
     }
     constructor() {
@@ -180,3 +267,4 @@ export class Observer {
     }
     slotReleasedTestCallback: ((proxied: Slot) => void) | null = null
 }
+var cc = 0

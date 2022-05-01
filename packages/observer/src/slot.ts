@@ -62,8 +62,8 @@ export class Slot {
         this.proxiedObject = makeProxy(object, observer)
 
     }
-    hasParentSlot(slot: Slot) {
-        return this.#observer.hasRelativeSlot(this, slot, 'PARENT')
+    getParentSlotCount(slot: Slot) {
+        return this.#observer.getRelativeSlotCount(this, slot, 'PARENT')
     }
     addParentSlot(slot: Slot) {
         const ret = this.#observer.addRelativeSlot(this, slot, 'PARENT')
@@ -93,17 +93,19 @@ export class Slot {
     #removeParentSlotNoRelease(slot: Slot) {
         return this.#observer.removeRelativeSlot(this, slot, 'PARENT')
     }
+    #clearParentSlotNoRelease(slot: Slot) {
+        return this.#observer.clearRelativeSlot(this, slot, 'PARENT')
+    }
     #tryRelease() {
 
         const symbol = Symbol()
         function couldRelease(slot: Slot) {
-
             let ret: boolean | undefined = undefined
             if (slot.#objectObserverRefrenceAgents.size === 0) {
                 let parentSlots = slot.parentSlots
                 // let parentSlotSet = slot.#observer.getParentSlotSet(slot)
                 if (!parentSlots) {
-                    Logger.warn('')
+           
                     ret = true
                 } else {
                     ret = true
@@ -124,22 +126,6 @@ export class Slot {
             }
 
             return ret
-            // Array.from(parentSlotSet)
-            // if (!releaseParentSlot) {
-            //     if (parentSlotSet.size > 0) {
-            //         return false
-            //     }
-            //     return true
-            // } else {
-            //     if (parentSlotSet.size === 0) {
-            //         Logger.warn('')
-            //     }
-            //     if (parentSlotSet.size === 1 && parentSlotSet.has(releaseParentSlot)) {
-            //         return true
-            //     }
-            //     return false
-
-            // }
         }
         if (!couldRelease(this)) {
             return
@@ -176,7 +162,7 @@ export class Slot {
             }
             if (releaseSet) {
                 for (const slot of releaseSet.values()) {
-                    slot.#removeParentSlotNoRelease(current)
+                    slot.#clearParentSlotNoRelease(current)
                     this.#observer.slotReleasedTestCallback?.(current);
                 }
             }
@@ -191,11 +177,11 @@ export class Slot {
     //     return this.#slotReferences.values()
     // }
     get parentSlots() {
-        return this.#observer.getParentSlotSet(this)?.values()
+        return this.#observer.getParentSlotMap(this)?.keys()
 
     }
     get childSlots() {
-        return this.#observer.getChildSlotSet(this)?.values()
+        return this.#observer.getChildSlotMap(this)?.keys()
 
 
     }
