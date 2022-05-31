@@ -3,12 +3,12 @@ import Counter from '@/counter'
 import { Observer, Record } from '@facing/observer/src/index'
 
 export default async function () {
-    const logger = createLogger('observer')
+    const logger = createLogger('observer');
 
 
 
 
-    let observer = new Observer();
+    // let observer = new Observer();
     // (function () {
     //     const counter = new Counter(logger)
     //     function watcher(pobj: any) {
@@ -139,7 +139,7 @@ export default async function () {
     (function () {
         let observer = new Observer();
         observer.slotReleasedTestCallback = function (slot) {
-            console.log('r', slot)
+            // console.log('r', slot)
         };
         (window as any).obs = observer;
         const counter = new Counter(logger)
@@ -156,7 +156,7 @@ export default async function () {
                 counter.grow()
             })
         }).object
-
+        logger.debug(obj1)
         let obj1_1: any = { tag: 'obj1_1' }
         obj1_1 = observer.observe(obj1_1, {
             record: new Record(function (obj: any) {
@@ -202,40 +202,8 @@ export default async function () {
         obj1.child.chil3 = obj1_1
         delete obj1.child
 
-        // obja
-        // objb
-        // obja.a = objb
-        // obja.b = objb
-        // fix reference count
-
-
-        // counter.assertNoGrow(7)
-        // obj1_1.children.pop()
-        // counter.assertNoGrow(9)
-        // obj1_1.children.push([
-        //     obj1_1_1
-        // ])
-        // counter.assertNoGrow(11)
-
     })();
 
 
-    /*
-        (function () {
-            const counter = new Counter(logger)
-            let obj1: any = {}
-            obj1 = observer.observe(obj1, {
-                record: new Record(function (obj: any) {
-                    logger.assert(obj1 === obj)
-                    switch (counter.count) {
-                        case 1:
-                            break;
-    
-                    }
-                    counter.grow()
-                })
-            }).object
-        })();
-        */
 
 }
